@@ -38,7 +38,7 @@
         
         <!-- 版权信息 -->
         <div class="footer">
-            ©Copyright 2025-2026 上海大学 11小组
+            ©Copyright 2026-2027 上海大学 数据库2课程项目
         </div>
     </div>
 </template>
