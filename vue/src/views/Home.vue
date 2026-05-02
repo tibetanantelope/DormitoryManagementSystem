@@ -30,9 +30,9 @@
         <el-col :span="6">
           <div id="emptyRoom" class="el-colDiv">
             <div id="ssv4-main-text" class="nowDiv">实时</div>
-            <span class="title">空宿舍统计</span><br/>
+            <span class="title">未住满宿舍统计</span><br/>
             <span class="digital">{{ this.noFullRoomNum }}</span><br/>
-            <span class="last-span">当前分类总记录数</span>
+            <span class="last-span">仍有空床位的宿舍数</span>
           </div>
         </el-col>
       </el-row>

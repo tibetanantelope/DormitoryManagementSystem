@@ -28,7 +28,7 @@ public class DormRoomImpl extends ServiceImpl<DormRoomMapper, DormRoom> implemen
     @Override
     public int notFullRoom() {
         QueryWrapper<DormRoom> qw = new QueryWrapper<>();
-        qw.lt("current_capacity", 4);
+        qw.apply("current_capacity < max_capacity");
         int notFullRoomNum = Math.toIntExact(dormRoomMapper.selectCount(qw));
         return notFullRoomNum;
     }
