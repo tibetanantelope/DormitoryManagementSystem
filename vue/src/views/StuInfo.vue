@@ -15,7 +15,7 @@
                       style="width: 20%"/>
             <el-button icon="Search" style="margin-left: 5px" type="primary" @click="load"></el-button>
             <el-button icon="refresh-left" style="margin-left: 10px" type="default" @click="reset"></el-button>
-            <div style="float: right">
+            <div v-if="canAddStudent()" style="float: right">
               <el-tooltip content="添加" placement="top">
                 <el-button icon="plus" style="width: 50px" type="primary" @click="add"></el-button>
               </el-tooltip>
@@ -25,7 +25,7 @@
         <!--    表格-->
         <el-table v-loading="loading" :data="tableData" border max-height="705" style="width: 100%">
           <el-table-column label="#" type="index"/>
-          <el-table-column label="学号" prop="username" sortable/>
+          <el-table-column :sort-method="compareUsername" label="学号" prop="username" sortable/>
           <el-table-column label="姓名" prop="name"/>
           <el-table-column
               :filter-method="filterTag"

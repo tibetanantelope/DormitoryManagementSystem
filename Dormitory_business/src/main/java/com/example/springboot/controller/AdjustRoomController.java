@@ -1,10 +1,16 @@
 package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.AdjustRoom;
+import com.example.springboot.entity.DormBuild;
+import com.example.springboot.entity.DormRoom;
+import com.example.springboot.entity.Student;
 import com.example.springboot.service.AdjustRoomService;
+import com.example.springboot.service.DormBuildService;
 import com.example.springboot.service.DormRoomService;
+import com.example.springboot.service.StudentService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +25,12 @@ public class AdjustRoomController {
 
     @Resource
     private DormRoomService dormRoomService;
+
+    @Resource
+    private StudentService studentService;
+
+    @Resource
+    private DormBuildService dormBuildService;
 
 
     /**
@@ -56,6 +68,9 @@ public class AdjustRoomController {
             }
             if (!"通过".equals(oldApply.getState()) && !"approved".equals(oldApply.getState())) {
                 return Result.error("-1", "只有审核通过的申请才能执行调宿");
+            }
+            if (!adjustGenderMatchesTargetRoom(adjustRoom)) {
+                return Result.error("-1", "目标宿舍楼性别类型不匹配");
             }
             int i = dormRoomService.adjustRoomUpdate(adjustRoom);
             if (i == -1) {
@@ -185,5 +200,31 @@ public class AdjustRoomController {
         } else {
             return Result.error("-1", "查询失败");
         }
+    }
+
+    private boolean adjustGenderMatchesTargetRoom(AdjustRoom adjustRoom) {
+        Student student = studentService.stuInfo(adjustRoom.getUsername());
+        DormRoom targetRoom = dormRoomService.checkRoomExist(adjustRoom.getTowardsRoomId());
+        if (student == null || targetRoom == null) {
+            return false;
+        }
+        String expectedGender = getExpectedGender(targetRoom.getDormBuildId());
+        return expectedGender == null || expectedGender.equals(student.getGender());
+    }
+
+    private String getExpectedGender(int dormBuildId) {
+        QueryWrapper<DormBuild> qw = new QueryWrapper<>();
+        qw.eq("dormbuild_id", dormBuildId);
+        DormBuild dormBuild = dormBuildService.getOne(qw);
+        if (dormBuild == null || dormBuild.getDormBuildDetail() == null) {
+            return null;
+        }
+        if (dormBuild.getDormBuildDetail().contains("男")) {
+            return "男";
+        }
+        if (dormBuild.getDormBuildDetail().contains("女")) {
+            return "女";
+        }
+        return null;
     }
 }

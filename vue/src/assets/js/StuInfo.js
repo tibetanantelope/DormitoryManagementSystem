@@ -49,6 +49,8 @@ export default {
             pageSize: 10,
             total: 0,
             tableData: [],
+            identity: "",
+            user: {},
             form: {
                 username: "",
                 name: "",
@@ -108,6 +110,7 @@ export default {
         };
     },
     created() {
+        this.init();
         this.load();
         this.loading = true;
         setTimeout(() => {
@@ -116,6 +119,19 @@ export default {
         }, 1000);
     },
     methods: {
+        init() {
+            const identityStr = sessionStorage.getItem("identity");
+            const userStr = sessionStorage.getItem("user");
+            if (identityStr) {
+                this.identity = JSON.parse(identityStr);
+            }
+            if (userStr) {
+                this.user = JSON.parse(userStr);
+            }
+        },
+        canAddStudent() {
+            return this.identity === "admin";
+        },
         async load() {
             request.get("/stu/find", {
                 params: {
@@ -125,7 +141,7 @@ export default {
                 },
             }).then((res) => {
                 console.log(res);
-                this.tableData = res.data.records;
+                this.tableData = this.sortStudentsByUsername(res.data.records || []);
                 this.total = res.data.total;
                 this.loading = false;
             });
@@ -140,10 +156,25 @@ export default {
                 },
             }).then((res) => {
                 console.log(res);
-                this.tableData = res.data.records;
+                this.tableData = this.sortStudentsByUsername(res.data.records || []);
                 this.total = res.data.total;
                 this.loading = false;
             });
+        },
+        getUsernameNumber(username) {
+            const match = String(username || "").match(/\d+/);
+            return match ? Number(match[0]) : Number.MAX_SAFE_INTEGER;
+        },
+        compareUsername(a, b) {
+            const numA = this.getUsernameNumber(a.username);
+            const numB = this.getUsernameNumber(b.username);
+            if (numA !== numB) {
+                return numA - numB;
+            }
+            return String(a.username || "").localeCompare(String(b.username || ""));
+        },
+        sortStudentsByUsername(records) {
+            return records.slice().sort((a, b) => this.compareUsername(a, b));
         },
         filterTag(value, row) {
             return row.gender === value;

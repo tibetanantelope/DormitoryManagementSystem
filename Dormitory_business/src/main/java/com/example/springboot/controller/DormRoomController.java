@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.DormBuild;
 import com.example.springboot.entity.DormRoom;
+import com.example.springboot.entity.Student;
 import com.example.springboot.service.DormBuildService;
 import com.example.springboot.service.DormRoomService;
+import com.example.springboot.service.StudentService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,9 @@ public class DormRoomController {
     @Resource
     private DormBuildService dormBuildService;
 
+    @Resource
+    private StudentService studentService;
+
     /**
      * 添加房间
      */
@@ -33,6 +38,10 @@ public class DormRoomController {
         }
         if (!buildingExists(dormRoom.getDormBuildId())) {
             return Result.error("-1", "该楼栋不存在");
+        }
+        String genderError = validateRoomGender(dormRoom);
+        if (genderError != null) {
+            return Result.error("-1", genderError);
         }
         int i = dormRoomService.addNewRoom(dormRoom);
         if (i == 1) {
@@ -52,6 +61,10 @@ public class DormRoomController {
         }
         if (!buildingExists(dormRoom.getDormBuildId())) {
             return Result.error("-1", "该楼栋不存在");
+        }
+        String genderError = validateRoomGender(dormRoom);
+        if (genderError != null) {
+            return Result.error("-1", genderError);
         }
         int i = dormRoomService.updateNewRoom(dormRoom);
         if (i == 1) {
@@ -225,5 +238,49 @@ public class DormRoomController {
         QueryWrapper<DormBuild> qw = new QueryWrapper<>();
         qw.eq("dormbuild_id", dormBuildId);
         return dormBuildService.count(qw) > 0;
+    }
+
+    private String validateRoomGender(DormRoom dormRoom) {
+        String expectedGender = getExpectedGender(dormRoom.getDormBuildId());
+        if (expectedGender == null) {
+            return null;
+        }
+        String error = validateBedGender(dormRoom.getFirstBed(), expectedGender);
+        if (error != null) return error;
+        error = validateBedGender(dormRoom.getSecondBed(), expectedGender);
+        if (error != null) return error;
+        error = validateBedGender(dormRoom.getThirdBed(), expectedGender);
+        if (error != null) return error;
+        return validateBedGender(dormRoom.getFourthBed(), expectedGender);
+    }
+
+    private String validateBedGender(String username, String expectedGender) {
+        if (username == null || username.trim().isEmpty()) {
+            return null;
+        }
+        Student student = studentService.stuInfo(username);
+        if (student == null) {
+            return "床位学生不存在";
+        }
+        if (!expectedGender.equals(student.getGender())) {
+            return "学生" + username + "性别与宿舍楼类型不匹配";
+        }
+        return null;
+    }
+
+    private String getExpectedGender(int dormBuildId) {
+        QueryWrapper<DormBuild> qw = new QueryWrapper<>();
+        qw.eq("dormbuild_id", dormBuildId);
+        DormBuild dormBuild = dormBuildService.getOne(qw);
+        if (dormBuild == null || dormBuild.getDormBuildDetail() == null) {
+            return null;
+        }
+        if (dormBuild.getDormBuildDetail().contains("男")) {
+            return "男";
+        }
+        if (dormBuild.getDormBuildDetail().contains("女")) {
+            return "女";
+        }
+        return null;
     }
 }

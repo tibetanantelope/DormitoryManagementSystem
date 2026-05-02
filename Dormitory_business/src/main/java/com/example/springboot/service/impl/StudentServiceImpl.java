@@ -53,8 +53,28 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         Page page = new Page<>(pageNum, pageSize);
         QueryWrapper<Student> qw = new QueryWrapper<>();
         qw.like("name", search);
+        qw.orderByAsc("CAST(SUBSTRING(username, 4) AS UNSIGNED)", "username");
         Page studentPage = studentMapper.selectPage(page, qw);
         return studentPage;
+    }
+
+    /**
+     * 按宿舍楼分页查询学生（宿管只能看管辖楼栋）
+     */
+    @Override
+    public Page findByDormBuildId(Integer pageNum, Integer pageSize, String search, Integer dormBuildId) {
+        Page page = new Page<>(pageNum, pageSize);
+        QueryWrapper<Student> qw = new QueryWrapper<>();
+        qw.inSql("username",
+                "SELECT first_bed FROM dorm_room WHERE dormbuild_id = " + dormBuildId
+                        + " UNION SELECT second_bed FROM dorm_room WHERE dormbuild_id = " + dormBuildId
+                        + " UNION SELECT third_bed FROM dorm_room WHERE dormbuild_id = " + dormBuildId
+                        + " UNION SELECT fourth_bed FROM dorm_room WHERE dormbuild_id = " + dormBuildId);
+        if (search != null && !search.trim().isEmpty()) {
+            qw.like("name", search.trim());
+        }
+        qw.orderByAsc("CAST(SUBSTRING(username, 4) AS UNSIGNED)", "username");
+        return studentMapper.selectPage(page, qw);
     }
 
     /**
