@@ -36,6 +36,7 @@ export default {
             pageSize: 10,
             total: 0,
             tableData: [],
+            identity: "",
             form: {
                 dormRoomId: "",
                 dormBuildId: "",
@@ -58,7 +59,7 @@ export default {
                 ],
                 dormBuildId: [
                     {required: true, message: "请输入楼宇号数", trigger: "blur"},
-                    {pattern: /^[1-4]$/, message: "范围：1-4", trigger: "blur"},
+                    {pattern: /^(1|[1-9]\d?|100)$/, message: "范围：1-100", trigger: "blur"},
                 ],
                 maxCapacity: [
                     {required: true, message: "请输入房间可住人数", trigger: "blur"},
@@ -76,6 +77,7 @@ export default {
         };
     },
     created() {
+        this.init();
         this.load();
         this.loading = true;
         setTimeout(() => {
@@ -84,6 +86,15 @@ export default {
         }, 1000);
     },
     methods: {
+        init() {
+            const identityStr = sessionStorage.getItem("identity");
+            if (identityStr) {
+                this.identity = JSON.parse(identityStr);
+            }
+        },
+        canManageDormInfo() {
+            return this.identity === "admin";
+        },
         async load() {
             request.get("/room/find", {
                 params: {

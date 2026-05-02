@@ -139,6 +139,7 @@ export default {
             this.dialogVisible = true;
             this.$nextTick(() => {
                 this.$refs.form.resetFields();
+                this.form = {};
                 const user = JSON.parse(sessionStorage.getItem("user"));
                 this.form.username = user.username;
                 this.form.name = user.name;
@@ -174,10 +175,11 @@ export default {
             // 兼容中文状态
             if (!map[state]) {
                 // 如果已经是中文状态，直接返回
-                if (state === '未处理' || state === '通过' || state === '驳回' 
-                    || state === '处理中' || state === '已完成') {
-                    return state;
-                }
+                if (state === '未处理') return '待审核';
+                if (state === '通过') return '审核通过';
+                if (state === '驳回') return '审核不通过';
+                if (state === '处理中') return '处理中';
+                if (state === '已完成') return '已完成';
                 return state; // 返回原状态
             }
             return map[state];
@@ -252,7 +254,9 @@ export default {
                         this.form.applyTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
                         // 数据库表目前只支持中文状态，暂时使用'未处理'，后续可改为英文状态
                         this.form.state = '未处理'; // 默认状态为待审核
-                        request.post("/adjustRoom/add", this.form).then((res) => {
+                        const addForm = JSON.parse(JSON.stringify(this.form));
+                        delete addForm.id;
+                        request.post("/adjustRoom/add", addForm).then((res) => {
                             if (res.code === "0") {
                                 ElMessage({
                                     message: "添加成功",

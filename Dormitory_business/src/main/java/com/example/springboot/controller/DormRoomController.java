@@ -2,11 +2,15 @@ package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springboot.common.Result;
+import com.example.springboot.entity.DormBuild;
 import com.example.springboot.entity.DormRoom;
+import com.example.springboot.service.DormBuildService;
 import com.example.springboot.service.DormRoomService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 @RestController
@@ -16,11 +20,20 @@ public class DormRoomController {
     @Resource
     private DormRoomService dormRoomService;
 
+    @Resource
+    private DormBuildService dormBuildService;
+
     /**
      * 添加房间
      */
     @PostMapping("/add")
-    public Result<?> add(@RequestBody DormRoom dormRoom) {
+    public Result<?> add(@RequestBody DormRoom dormRoom, HttpSession session) {
+        if (!isAdmin(session)) {
+            return Result.error("-1", "无权限操作");
+        }
+        if (!buildingExists(dormRoom.getDormBuildId())) {
+            return Result.error("-1", "该楼栋不存在");
+        }
         int i = dormRoomService.addNewRoom(dormRoom);
         if (i == 1) {
             return Result.success();
@@ -33,7 +46,13 @@ public class DormRoomController {
      * 更新房间
      */
     @PutMapping("/update")
-    public Result<?> update(@RequestBody DormRoom dormRoom) {
+    public Result<?> update(@RequestBody DormRoom dormRoom, HttpSession session) {
+        if (!isAdmin(session)) {
+            return Result.error("-1", "无权限操作");
+        }
+        if (!buildingExists(dormRoom.getDormBuildId())) {
+            return Result.error("-1", "该楼栋不存在");
+        }
         int i = dormRoomService.updateNewRoom(dormRoom);
         if (i == 1) {
             return Result.success();
@@ -46,7 +65,10 @@ public class DormRoomController {
      * 删除房间
      */
     @DeleteMapping("/delete/{dormRoomId}")
-    public Result<?> delete(@PathVariable Integer dormRoomId) {
+    public Result<?> delete(@PathVariable Integer dormRoomId, HttpSession session) {
+        if (!isAdmin(session)) {
+            return Result.error("-1", "无权限操作");
+        }
         int i = dormRoomService.deleteRoom(dormRoomId);
         if (i == 1) {
             return Result.success();
@@ -87,7 +109,10 @@ public class DormRoomController {
      * 删除床位学生信息
      */
     @DeleteMapping("/delete/{bedName}/{dormRoomId}/{calCurrentNum}")
-    public Result<?> deleteBedInfo(@PathVariable String bedName, @PathVariable Integer dormRoomId, @PathVariable int calCurrentNum) {
+    public Result<?> deleteBedInfo(@PathVariable String bedName, @PathVariable Integer dormRoomId, @PathVariable int calCurrentNum, HttpSession session) {
+        if (!isAdmin(session)) {
+            return Result.error("-1", "无权限操作");
+        }
         int i = dormRoomService.deleteBedInfo(bedName, dormRoomId, calCurrentNum);
         if (i == 1) {
             return Result.success();
@@ -190,5 +215,15 @@ public class DormRoomController {
         } else {
             return Result.error("-1", "不存在该房间");
         }
+    }
+
+    private boolean isAdmin(HttpSession session) {
+        return "admin".equals(session.getAttribute("Identity"));
+    }
+
+    private boolean buildingExists(int dormBuildId) {
+        QueryWrapper<DormBuild> qw = new QueryWrapper<>();
+        qw.eq("dormbuild_id", dormBuildId);
+        return dormBuildService.count(qw) > 0;
     }
 }

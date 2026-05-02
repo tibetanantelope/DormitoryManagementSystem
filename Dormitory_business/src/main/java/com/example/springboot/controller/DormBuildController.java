@@ -7,6 +7,7 @@ import com.example.springboot.service.DormBuildService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,10 @@ public class DormBuildController {
      * 楼宇添加
      */
     @PostMapping("/add")
-    public Result<?> add(@RequestBody DormBuild dormBuild) {
+    public Result<?> add(@RequestBody DormBuild dormBuild, HttpSession session) {
+        if (!isAdmin(session)) {
+            return Result.error("-1", "无权限操作");
+        }
         int i = dormBuildService.addNewBuilding(dormBuild);
         if (i == 1) {
             return Result.success();
@@ -34,7 +38,10 @@ public class DormBuildController {
      * 楼宇信息更新
      */
     @PutMapping("/update")
-    public Result<?> update(@RequestBody DormBuild dormBuild) {
+    public Result<?> update(@RequestBody DormBuild dormBuild, HttpSession session) {
+        if (!isAdmin(session)) {
+            return Result.error("-1", "无权限操作");
+        }
         int i = dormBuildService.updateNewBuilding(dormBuild);
         if (i == 1) {
             return Result.success();
@@ -47,7 +54,10 @@ public class DormBuildController {
      * 楼宇删除
      */
     @DeleteMapping("/delete/{dormBuildId}")
-    public Result<?> delete(@PathVariable Integer dormBuildId) {
+    public Result<?> delete(@PathVariable Integer dormBuildId, HttpSession session) {
+        if (!isAdmin(session)) {
+            return Result.error("-1", "无权限操作");
+        }
         int i = dormBuildService.deleteBuilding(dormBuildId);
         if (i == 1) {
             return Result.success();
@@ -88,4 +98,8 @@ public class DormBuildController {
 //        } else {
 //            return Result.error("-1", "查询失败");
 //        }
+
+    private boolean isAdmin(HttpSession session) {
+        return "admin".equals(session.getAttribute("Identity"));
+    }
 }

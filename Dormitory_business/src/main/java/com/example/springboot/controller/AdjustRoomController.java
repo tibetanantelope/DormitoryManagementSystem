@@ -5,6 +5,7 @@ import com.example.springboot.common.Result;
 import com.example.springboot.entity.AdjustRoom;
 import com.example.springboot.service.AdjustRoomService;
 import com.example.springboot.service.DormRoomService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -46,13 +47,30 @@ public class AdjustRoomController {
      * 更新订单（管理员执行调宿操作）
      */
     @PutMapping("/update/{state}")
+    @Transactional
     public Result<?> update(@RequestBody AdjustRoom adjustRoom, @PathVariable Boolean state) {
         if (state) {
-            // 更新房间表信息
+            AdjustRoom oldApply = adjustRoomService.getById(adjustRoom.getId());
+            if (oldApply == null) {
+                return Result.error("-1", "调宿申请不存在");
+            }
+            if (!"通过".equals(oldApply.getState()) && !"approved".equals(oldApply.getState())) {
+                return Result.error("-1", "只有审核通过的申请才能执行调宿");
+            }
             int i = dormRoomService.adjustRoomUpdate(adjustRoom);
             if (i == -1) {
-                return Result.error("-1", "重复操作");
+                return Result.error("-1", "目标床位已有人");
             }
+            if (i == -2) {
+                return Result.error("-1", "原床位信息不匹配，无法执行调宿");
+            }
+            if (i != 1) {
+                return Result.error("-1", "执行调宿失败");
+            }
+            adjustRoom.setState("处理中");
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            adjustRoom.setFinishTime(now.format(formatter));
         }
         //更新调宿表信息
         int i = adjustRoomService.updateApply(adjustRoom);

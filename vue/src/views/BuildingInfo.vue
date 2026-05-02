@@ -14,7 +14,7 @@
             <el-input v-model="search" clearable placeholder="请输入编号" prefix-icon="Search" style="width: 20%"/>
             <el-button icon="Search" style="margin-left: 5px" type="primary" @click="load"></el-button>
             <el-button icon="refresh-left" style="margin-left: 10px" type="default" @click="reset"></el-button>
-            <div style="float: right">
+            <div v-if="canManageDormInfo()" style="float: right">
               <el-tooltip content="添加" placement="top">
                 <el-button icon="plus" style="width: 50px" type="primary" @click="add"></el-button>
               </el-tooltip>
@@ -38,7 +38,7 @@
               prop="dormBuildDetail"
           />
           <!--      操作栏-->
-          <el-table-column label="操作" width="130px">
+          <el-table-column v-if="canManageDormInfo()" label="操作" width="130px">
             <template #default="scope">
               <el-button icon="Edit" type="primary" @click="handleEdit(scope.row)"
               ></el-button>

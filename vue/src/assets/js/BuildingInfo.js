@@ -16,6 +16,7 @@ export default {
             pageSize: 10,
             total: 0,
             tableData: [],
+            identity: "",
             form: {
                 dormBuildId: "",
                 dormBuildName: "",
@@ -40,6 +41,7 @@ export default {
         };
     },
     created() {
+        this.init();
         this.load();
         this.loading = true;
         setTimeout(() => {
@@ -48,6 +50,15 @@ export default {
         }, 1000);
     },
     methods: {
+        init() {
+            const identityStr = sessionStorage.getItem("identity");
+            if (identityStr) {
+                this.identity = JSON.parse(identityStr);
+            }
+        },
+        canManageDormInfo() {
+            return this.identity === "admin";
+        },
         async load() {
             request.get("/building/find", {
                 params: {

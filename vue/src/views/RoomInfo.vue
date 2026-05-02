@@ -14,7 +14,7 @@
             <el-input v-model="search" clearable placeholder="请输入房间号" prefix-icon="Search" style="width: 20%"/>
             <el-button icon="Search" style="margin-left: 5px" type="primary" @click="load"></el-button>
             <el-button icon="refresh-left" style="margin-left: 10px" type="default" @click="reset"></el-button>
-            <div style="float: right">
+            <div v-if="canManageDormInfo()" style="float: right">
               <el-tooltip content="添加" placement="top">
                 <el-button icon="plus" style="width: 50px" type="primary" @click="add"></el-button>
               </el-tooltip>
@@ -34,17 +34,17 @@
                     >{{ props.row.firstBed }}
                     </el-tag>
                     <div class="el-form--inline-icon">
-                      <el-icon v-if="props.row.firstBed == null" @click="plusIcon(1, props.row)">
+                      <el-icon v-if="props.row.firstBed == null && canManageDormInfo()" @click="plusIcon(1, props.row)">
                         <plus/>
                       </el-icon>
                       <div v-if="props.row.firstBed != null" class="el-form--inline-icon">
                         <el-icon @click="detailIcon(1, props.row)">
                           <more-filled/>
                         </el-icon>
-                        <el-icon @click="editIcon(1, props.row)">
+                        <el-icon v-if="canManageDormInfo()" @click="editIcon(1, props.row)">
                           <edit/>
                         </el-icon>
-                        <el-popconfirm title="确认删除？" @confirm="deleteStuBed(1, props.row)">
+                        <el-popconfirm v-if="canManageDormInfo()" title="确认删除？" @confirm="deleteStuBed(1, props.row)">
                           <template #reference>
                             <el-icon>
                               <delete/>
@@ -61,17 +61,17 @@
                     >{{ props.row.secondBed }}
                     </el-tag>
                     <div class="el-form--inline-icon">
-                      <el-icon v-if="props.row.secondBed == null" @click="plusIcon(2, props.row)">
+                      <el-icon v-if="props.row.secondBed == null && canManageDormInfo()" @click="plusIcon(2, props.row)">
                         <plus/>
                       </el-icon>
                       <div v-if="props.row.secondBed != null" class="el-form--inline-icon">
                         <el-icon @click="detailIcon(2, props.row)">
                           <more-filled/>
                         </el-icon>
-                        <el-icon @click="editIcon(2, props.row)">
+                        <el-icon v-if="canManageDormInfo()" @click="editIcon(2, props.row)">
                           <edit/>
                         </el-icon>
-                        <el-popconfirm title="确认删除？" @confirm="deleteStuBed(2, props.row)">
+                        <el-popconfirm v-if="canManageDormInfo()" title="确认删除？" @confirm="deleteStuBed(2, props.row)">
                           <template #reference>
                             <el-icon>
                               <delete/>
@@ -88,17 +88,17 @@
                     >{{ props.row.thirdBed }}
                     </el-tag>
                     <div class="el-form--inline-icon">
-                      <el-icon v-if="props.row.thirdBed == null" @click="plusIcon(3, props.row)">
+                      <el-icon v-if="props.row.thirdBed == null && canManageDormInfo()" @click="plusIcon(3, props.row)">
                         <plus/>
                       </el-icon>
                       <div v-if="props.row.thirdBed != null" class="el-form--inline-icon">
                         <el-icon @click="detailIcon(3, props.row)">
                           <more-filled/>
                         </el-icon>
-                        <el-icon @click="editIcon(3, props.row)">
+                        <el-icon v-if="canManageDormInfo()" @click="editIcon(3, props.row)">
                           <edit/>
                         </el-icon>
-                        <el-popconfirm title="确认删除？" @confirm="deleteStuBed(3, props.row)">
+                        <el-popconfirm v-if="canManageDormInfo()" title="确认删除？" @confirm="deleteStuBed(3, props.row)">
                           <template #reference>
                             <el-icon>
                               <delete/>
@@ -115,17 +115,17 @@
                     >{{ props.row.fourthBed }}
                     </el-tag>
                     <div class="el-form--inline-icon">
-                      <el-icon v-if="props.row.fourthBed == null" @click="plusIcon(4, props.row)">
+                      <el-icon v-if="props.row.fourthBed == null && canManageDormInfo()" @click="plusIcon(4, props.row)">
                         <plus/>
                       </el-icon>
                       <div v-if="props.row.fourthBed != null" class="el-form--inline-icon">
                         <el-icon @click="detailIcon(4, props.row)">
                           <more-filled/>
                         </el-icon>
-                        <el-icon @click="editIcon(4, props.row)">
+                        <el-icon v-if="canManageDormInfo()" @click="editIcon(4, props.row)">
                           <edit/>
                         </el-icon>
-                        <el-popconfirm title="确认删除？" @confirm="deleteStuBed(4, props.row)">
+                        <el-popconfirm v-if="canManageDormInfo()" title="确认删除？" @confirm="deleteStuBed(4, props.row)">
                           <template #reference>
                             <el-icon>
                               <delete/>
@@ -158,7 +158,7 @@
               sortable
           />
           <!--      操作栏-->
-          <el-table-column label="操作" width="130px">
+          <el-table-column v-if="canManageDormInfo()" label="操作" width="130px">
             <template #default="scope">
               <el-button icon="Edit" type="primary" @click="handleEdit(scope.row)"
               ></el-button>

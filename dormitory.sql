@@ -30,7 +30,7 @@ CREATE TABLE `adjust_room` (
   `currentbed_id` int NOT NULL COMMENT '当前床位号',
   `towardsroom_id` int NOT NULL COMMENT '目标房间',
   `towardsbed_id` int NOT NULL COMMENT '目标床位号',
-  `state` enum('未处理','通过','驳回') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '未处理' COMMENT '申请状态',
+  `state` enum('未处理','通过','驳回','处理中','已完成') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '未处理' COMMENT '申请状态',
   `apply_time` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '申请时间',
   `finish_time` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '处理时间',
   PRIMARY KEY (`id`) USING BTREE

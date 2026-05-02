@@ -59,9 +59,9 @@
               <!-- 管理员：只能处理审核通过的申请 -->
               <el-button v-if="judgeIdentityForTemplate() === 2 && (scope.row.state === 'approved' || scope.row.state === '通过')" 
                          icon="Edit" type="primary" @click="handleEdit(scope.row)">执行调宿</el-button>
-              <!-- 管理员：标记完成 -->
+              <!-- 管理员：确认处理中申请已完成 -->
               <el-button v-if="judgeIdentityForTemplate() === 2 && (scope.row.state === 'in_progress' || scope.row.state === '处理中')" 
-                         icon="Check" type="success" @click="handleComplete(scope.row)">标记完成</el-button>
+                         icon="Check" type="success" @click="handleComplete(scope.row)">完成</el-button>
               <!-- 删除：只能删除已完成或审核不通过的记录 -->
               <el-popconfirm v-if="scope.row.state === 'completed' || scope.row.state === 'rejected' || scope.row.state === '已完成' || scope.row.state === '驳回'" 
                              title="确认删除？" @confirm="handleDelete(scope.row.id)">

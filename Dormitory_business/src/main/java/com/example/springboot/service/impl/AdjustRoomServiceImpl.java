@@ -28,6 +28,7 @@ public class AdjustRoomServiceImpl extends ServiceImpl<AdjustRoomMapper, AdjustR
      */
     @Override
     public int addApply(AdjustRoom adjustRoom) {
+        adjustRoom.setId(null);
         int insert = adjustRoomMapper.insert(adjustRoom);
         return insert;
     }

@@ -173,9 +173,19 @@ public class DormRoomImpl extends ServiceImpl<DormRoomMapper, DormRoom> implemen
         int towardsRoomId = adjustRoom.getTowardsRoomId();
         //目标目标房间号
         String towardsBedName = JudgeBedName.getBedName(adjustRoom.getTowardsBedId());
+        if (currentBedName == null || towardsBedName == null) {
+            return -2;
+        }
+        QueryWrapper targetQw = new QueryWrapper();
+        targetQw.eq("dormroom_id", towardsRoomId);
+        targetQw.isNull(towardsBedName);
+        DormRoom targetRoom = dormRoomMapper.selectOne(targetQw);
+        if (targetRoom == null) {
+            return -1;
+        }
         QueryWrapper qw = new QueryWrapper();
         qw.eq("dormroom_id", currentRoomId);
-        qw.isNotNull(currentBedName);
+        qw.eq(currentBedName, username);
         DormRoom dormRoom1 = dormRoomMapper.selectOne(qw);
         if (dormRoom1 == null) {
             return -2;
@@ -186,14 +196,23 @@ public class DormRoomImpl extends ServiceImpl<DormRoomMapper, DormRoom> implemen
         uw1.set(currentBedName, null);
         uw1.set("current_capacity", currentCapacity1 - 1);
         int result1 = dormRoomMapper.update(null, uw1);
-        DormRoom dormRoom2 = dormRoomMapper.selectById(towardsRoomId);
-        int currentCapacity2 = calNum(dormRoom2);
+        int currentCapacity2 = calNum(targetRoom);
         if (result1 == 1) {
             UpdateWrapper uw2 = new UpdateWrapper();
             uw2.eq("dormroom_id", towardsRoomId);
+            uw2.isNull(towardsBedName);
             uw2.set(towardsBedName, username);
             uw2.set("current_capacity", currentCapacity2 + 1);
             int result2 = dormRoomMapper.update(null, uw2);
+            if (result2 != 1) {
+                UpdateWrapper restoreWrapper = new UpdateWrapper();
+                restoreWrapper.eq("dormroom_id", currentRoomId);
+                restoreWrapper.isNull(currentBedName);
+                restoreWrapper.set(currentBedName, username);
+                restoreWrapper.set("current_capacity", currentCapacity1);
+                dormRoomMapper.update(null, restoreWrapper);
+                return -1;
+            }
             return result2;
         }
         return -1;

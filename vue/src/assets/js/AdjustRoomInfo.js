@@ -2,26 +2,7 @@ import request from "@/utils/request";
 const { ElMessage } = require("element-plus");
 export default {
     name: "AdjustRoomInfo",
-    data() {
-        const checkRoomState = (rule, value, callback) => {
-            this.dormRoomId = value
-            request.get("/room/checkRoomState/" + value).then((res) => {
-                if (res.code === "0") {
-                    callback();
-                } else {
-                    callback(new Error(res.msg));
-                }
-            });
-        };
-        const checkBedState = (rule, value, callback) => {
-            request.get("/room/checkBedState/" + this.dormRoomId + '/' + value).then((res) => {
-                if (res.code === "0") {
-                    callback();
-                } else {
-                    callback(new Error(res.msg));
-                }
-            });
-        };
+        data() {
         const checkApplyState = (rule, value, callback) => {
             if (value === "通过" || value === "驳回") {
                 callback();
@@ -61,8 +42,12 @@ export default {
                 currentBedId: [
                     { required: true, message: "请输入当前床位号", trigger: "blur" },
                 ],
-                towardsRoomId: [{ validator: checkRoomState, trigger: "blur" }],
-                towardsBedId: [{ validator: checkBedState, trigger: "blur" }],
+                towardsRoomId: [
+                    { required: true, message: "请输入目标房间号", trigger: "blur" },
+                ],
+                towardsBedId: [
+                    { required: true, message: "请输入目标床位号", trigger: "blur" },
+                ],
             },
         }
     },
@@ -109,10 +94,11 @@ export default {
             // 兼容旧的中文状态
             if (!map[state]) {
                 // 如果已经是中文状态，直接返回
-                if (state === '未处理' || state === '通过' || state === '驳回' 
-                    || state === '处理中' || state === '已完成') {
-                    return state;
-                }
+                if (state === '未处理') return '待审核';
+                if (state === '通过') return '审核通过';
+                if (state === '驳回') return '审核不通过';
+                if (state === '处理中') return '处理中';
+                if (state === '已完成') return '已完成';
                 return state; // 返回原状态
             }
             return map[state];
@@ -172,7 +158,7 @@ export default {
                     this.loading = false;
                 });
             } else if (this.judgeIdentity() === 2) {
-                // 管理员：查询所有申请（包括通过、处理中、已完成等状态）
+                // 管理员：查询所有申请
                 request.get("/adjustRoom/find", { params }).then((res) => {
                     if (res.code === "0") {
                         this.tableData = res.data.records || [];
@@ -302,14 +288,14 @@ export default {
         save() {
             this.$refs.form.validate((valid) => {
                 if (valid) {
-                    // 管理员执行调宿：更新状态为处理中（后端会自动转换）
+                    // 管理员执行调宿：后端会在床位更新成功后把申请状态改为处理中
                     this.form.state = '处理中';
                     this.judgeOrderState('通过'); // 需要是"通过"状态才能执行调宿
                     // 提交修改请求
                     request.put("/adjustRoom/update/" + this.orderState, this.form).then((res) => {
                         if (res.code === "0") {
                             ElMessage({
-                                message: "开始执行调宿",
+                                message: "调宿执行成功，状态已变更为处理中",
                                 type: "success",
                             });
                             this.load();
@@ -336,16 +322,15 @@ export default {
                 }
             });
         },
-        // 管理员标记完成
+        // 管理员确认完成
         handleComplete(row) {
             const form = JSON.parse(JSON.stringify(row));
-            form.state = '已完成'; // 直接使用中文状态
+            form.state = '已完成';
             form.finishTime = this.getCurrentTime();
-            this.judgeOrderState('通过'); // 需要是"通过"状态才能执行调宿操作
-            request.put("/adjustRoom/update/" + this.orderState, form).then((res) => {
+            request.put("/adjustRoom/update/false", form).then((res) => {
                 if (res.code === "0") {
                     ElMessage({
-                        message: "标记为已完成",
+                        message: "调宿已完成",
                         type: "success",
                     });
                     this.load();
