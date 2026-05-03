@@ -133,7 +133,7 @@ export default {
             });
         },
         filterTag(value, row) {
-            return row.gender === value;
+            return row.state === value || this.stateMap(row.state) === this.stateMap(value);
         },
         add() {
             this.dialogVisible = true;
@@ -170,7 +170,8 @@ export default {
                 'approved': '审核通过',
                 'rejected': '审核不通过',
                 'in_progress': '处理中',
-                'completed': '已完成'
+                'completed': '已完成',
+                'execution_rejected': '拒绝执行'
             };
             // 兼容中文状态
             if (!map[state]) {
@@ -180,6 +181,7 @@ export default {
                 if (state === '驳回') return '审核不通过';
                 if (state === '处理中') return '处理中';
                 if (state === '已完成') return '已完成';
+                if (state === '拒绝执行') return '拒绝执行';
                 return state; // 返回原状态
             }
             return map[state];
@@ -191,7 +193,8 @@ export default {
                 'approved': 'success',       // 审核通过 - 绿色
                 'rejected': 'danger',        // 审核不通过 - 红色
                 'in_progress': 'info',       // 处理中 - 蓝色
-                'completed': ''              // 已完成 - 默认灰
+                'completed': '',             // 已完成 - 默认灰
+                'execution_rejected': 'danger' // 拒绝执行 - 红色
             };
             // 兼容中文状态
             if (state === '通过') return 'success';
@@ -199,6 +202,7 @@ export default {
             if (state === '未处理') return 'warning';
             if (state === '处理中') return 'info';
             if (state === '已完成') return '';
+            if (state === '拒绝执行') return 'danger';
             return typeMap[state] || '';
         },
         judgeOrderState(state) {

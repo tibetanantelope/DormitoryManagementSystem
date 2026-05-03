@@ -95,6 +95,15 @@ export default {
         canManageDormInfo() {
             return this.identity === "admin";
         },
+        isStudent() {
+            return this.identity === "stu";
+        },
+        bedStatus(value) {
+            return value == null ? "空床" : "有人";
+        },
+        bedStatusType(value) {
+            return value == null ? "info" : "success";
+        },
         async load() {
             request.get("/room/find", {
                 params: {

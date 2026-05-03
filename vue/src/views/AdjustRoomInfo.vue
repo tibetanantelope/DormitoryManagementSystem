@@ -33,6 +33,7 @@
               { text: '审核不通过', value: 'rejected' },
               { text: '处理中', value: 'in_progress' },
               { text: '已完成', value: 'completed' },
+              { text: '拒绝执行', value: 'execution_rejected' },
             ]"
               filter-placement="bottom-end"
               label="申请状态"
@@ -50,7 +51,7 @@
           <el-table-column label="申请时间" prop="applyTime" sortable/>
           <el-table-column label="处理时间" prop="finishTime" sortable/>
           <!--      操作栏-->
-          <el-table-column label="操作" width="250px">
+          <el-table-column label="操作" width="330px">
             <template #default="scope">
               <el-button icon="more-filled" type="default" @click="showDetail(scope.row)"></el-button>
               <!-- 宿管：只能审核待审核状态的申请 -->
@@ -59,11 +60,17 @@
               <!-- 管理员：只能处理审核通过的申请 -->
               <el-button v-if="judgeIdentityForTemplate() === 2 && (scope.row.state === 'approved' || scope.row.state === '通过')" 
                          icon="Edit" type="primary" @click="handleEdit(scope.row)">执行调宿</el-button>
+              <el-popconfirm v-if="judgeIdentityForTemplate() === 2 && (scope.row.state === 'approved' || scope.row.state === '通过')"
+                             title="确认拒绝执行该调宿申请？" @confirm="handleRejectExecute(scope.row)">
+                <template #reference>
+                  <el-button icon="Close" type="danger">拒绝执行</el-button>
+                </template>
+              </el-popconfirm>
               <!-- 管理员：确认处理中申请已完成 -->
               <el-button v-if="judgeIdentityForTemplate() === 2 && (scope.row.state === 'in_progress' || scope.row.state === '处理中')" 
                          icon="Check" type="success" @click="handleComplete(scope.row)">完成</el-button>
               <!-- 删除：只能删除已完成或审核不通过的记录 -->
-              <el-popconfirm v-if="scope.row.state === 'completed' || scope.row.state === 'rejected' || scope.row.state === '已完成' || scope.row.state === '驳回'" 
+              <el-popconfirm v-if="scope.row.state === 'completed' || scope.row.state === 'rejected' || scope.row.state === 'execution_rejected' || scope.row.state === '已完成' || scope.row.state === '驳回' || scope.row.state === '拒绝执行'" 
                              title="确认删除？" @confirm="handleDelete(scope.row.id)">
                 <template #reference>
                   <el-button icon="Delete" type="danger"></el-button>

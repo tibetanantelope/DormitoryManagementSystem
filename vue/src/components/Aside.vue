@@ -24,15 +24,15 @@
       <el-menu-item v-if="this.judgeIdentity()!==0" index="/stuInfo">学生信息</el-menu-item>
       <el-menu-item v-if="this.judgeIdentity()===2" index="/dormManagerInfo">宿管信息</el-menu-item>
     </el-sub-menu>
-    <el-sub-menu v-if="this.judgeIdentity()!==0" index="3">
+    <el-sub-menu index="3">
       <template #title>
         <el-icon>
           <coin/>
         </el-icon>
         <span>宿舍管理</span>
       </template>
-      <el-menu-item v-if="this.judgeIdentity()!==0" index="/buildingInfo">楼宇信息</el-menu-item>
-      <el-menu-item v-if="this.judgeIdentity()!==0" index="/roomInfo">房间信息</el-menu-item>
+      <el-menu-item index="/buildingInfo">楼宇信息</el-menu-item>
+      <el-menu-item index="/roomInfo">房间信息</el-menu-item>
     </el-sub-menu>
     <el-sub-menu v-if="this.judgeIdentity()!==0" index="4">
       <template #title>

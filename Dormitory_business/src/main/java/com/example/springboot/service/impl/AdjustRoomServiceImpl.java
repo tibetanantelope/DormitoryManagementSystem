@@ -114,10 +114,13 @@ public class AdjustRoomServiceImpl extends ServiceImpl<AdjustRoomMapper, AdjustR
             case "completed":
             case "已完成":
                 return "已完成";
+            case "execution_rejected":
+            case "拒绝执行":
+                return "拒绝执行";
             default:
                 // 如果已经是中文状态，直接返回
                 if (state.equals("未处理") || state.equals("通过") || state.equals("驳回") 
-                    || state.equals("处理中") || state.equals("已完成")) {
+                    || state.equals("处理中") || state.equals("已完成") || state.equals("拒绝执行")) {
                     return state;
                 }
                 return "未处理";

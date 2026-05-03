@@ -37,6 +37,7 @@
               { text: '审核不通过', value: 'rejected' },
               { text: '处理中', value: 'in_progress' },
               { text: '已完成', value: 'completed' },
+              { text: '拒绝执行', value: 'execution_rejected' },
             ]"
               filter-placement="bottom-end"
               label="申请状态"

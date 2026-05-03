@@ -30,14 +30,17 @@
               <el-form inline label-position="left">
                 <el-form-item label="一号床位" class="item">
                   <template #default="scope">
-                    <el-tag v-if="props.row.firstBed != null" disable-transitions type="primary"
+                    <el-tag v-if="isStudent()" :type="bedStatusType(props.row.firstBed)" disable-transitions
+                    >{{ bedStatus(props.row.firstBed) }}
+                    </el-tag>
+                    <el-tag v-else-if="props.row.firstBed != null" disable-transitions type="primary"
                     >{{ props.row.firstBed }}
                     </el-tag>
                     <div class="el-form--inline-icon">
                       <el-icon v-if="props.row.firstBed == null && canManageDormInfo()" @click="plusIcon(1, props.row)">
                         <plus/>
                       </el-icon>
-                      <div v-if="props.row.firstBed != null" class="el-form--inline-icon">
+                      <div v-if="props.row.firstBed != null && !isStudent()" class="el-form--inline-icon">
                         <el-icon @click="detailIcon(1, props.row)">
                           <more-filled/>
                         </el-icon>
@@ -57,14 +60,17 @@
                 </el-form-item>
                 <el-form-item label="二号床位" class="item">
                   <template #default="scope">
-                    <el-tag v-if="props.row.secondBed != null" disable-transitions type="primary"
+                    <el-tag v-if="isStudent()" :type="bedStatusType(props.row.secondBed)" disable-transitions
+                    >{{ bedStatus(props.row.secondBed) }}
+                    </el-tag>
+                    <el-tag v-else-if="props.row.secondBed != null" disable-transitions type="primary"
                     >{{ props.row.secondBed }}
                     </el-tag>
                     <div class="el-form--inline-icon">
                       <el-icon v-if="props.row.secondBed == null && canManageDormInfo()" @click="plusIcon(2, props.row)">
                         <plus/>
                       </el-icon>
-                      <div v-if="props.row.secondBed != null" class="el-form--inline-icon">
+                      <div v-if="props.row.secondBed != null && !isStudent()" class="el-form--inline-icon">
                         <el-icon @click="detailIcon(2, props.row)">
                           <more-filled/>
                         </el-icon>
@@ -84,14 +90,17 @@
                 </el-form-item>
                 <el-form-item label="三号床位" class="item">
                   <template #default="scope">
-                    <el-tag v-if="props.row.thirdBed != null" disable-transitions type="primary"
+                    <el-tag v-if="isStudent()" :type="bedStatusType(props.row.thirdBed)" disable-transitions
+                    >{{ bedStatus(props.row.thirdBed) }}
+                    </el-tag>
+                    <el-tag v-else-if="props.row.thirdBed != null" disable-transitions type="primary"
                     >{{ props.row.thirdBed }}
                     </el-tag>
                     <div class="el-form--inline-icon">
                       <el-icon v-if="props.row.thirdBed == null && canManageDormInfo()" @click="plusIcon(3, props.row)">
                         <plus/>
                       </el-icon>
-                      <div v-if="props.row.thirdBed != null" class="el-form--inline-icon">
+                      <div v-if="props.row.thirdBed != null && !isStudent()" class="el-form--inline-icon">
                         <el-icon @click="detailIcon(3, props.row)">
                           <more-filled/>
                         </el-icon>
@@ -111,14 +120,17 @@
                 </el-form-item>
                 <el-form-item label="四号床位" class="item">
                   <template #default="scope">
-                    <el-tag v-if="props.row.fourthBed != null" disable-transitions type="primary"
+                    <el-tag v-if="isStudent()" :type="bedStatusType(props.row.fourthBed)" disable-transitions
+                    >{{ bedStatus(props.row.fourthBed) }}
+                    </el-tag>
+                    <el-tag v-else-if="props.row.fourthBed != null" disable-transitions type="primary"
                     >{{ props.row.fourthBed }}
                     </el-tag>
                     <div class="el-form--inline-icon">
                       <el-icon v-if="props.row.fourthBed == null && canManageDormInfo()" @click="plusIcon(4, props.row)">
                         <plus/>
                       </el-icon>
-                      <div v-if="props.row.fourthBed != null" class="el-form--inline-icon">
+                      <div v-if="props.row.fourthBed != null && !isStudent()" class="el-form--inline-icon">
                         <el-icon @click="detailIcon(4, props.row)">
                           <more-filled/>
                         </el-icon>

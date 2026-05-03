@@ -89,7 +89,8 @@ export default {
                 'approved': '审核通过',
                 'rejected': '审核不通过',
                 'in_progress': '处理中',
-                'completed': '已完成'
+                'completed': '已完成',
+                'execution_rejected': '拒绝执行'
             };
             // 兼容旧的中文状态
             if (!map[state]) {
@@ -99,6 +100,7 @@ export default {
                 if (state === '驳回') return '审核不通过';
                 if (state === '处理中') return '处理中';
                 if (state === '已完成') return '已完成';
+                if (state === '拒绝执行') return '拒绝执行';
                 return state; // 返回原状态
             }
             return map[state];
@@ -110,7 +112,8 @@ export default {
                 'approved': 'success',       // 审核通过 - 绿色
                 'rejected': 'danger',        // 审核不通过 - 红色
                 'in_progress': 'info',       // 处理中 - 蓝色
-                'completed': ''              // 已完成 - 默认灰
+                'completed': '',             // 已完成 - 默认灰
+                'execution_rejected': 'danger' // 拒绝执行 - 红色
             };
             // 兼容旧的中文状态
             if (state === '通过') return 'success';
@@ -118,6 +121,7 @@ export default {
             if (state === '未处理') return 'warning';
             if (state === '处理中') return 'info';
             if (state === '已完成') return '';
+            if (state === '拒绝执行') return 'danger';
             return typeMap[state] || '';
         },
         judgeIdentityForTemplate() {
@@ -214,7 +218,7 @@ export default {
             this.load();
         },
         filterTag(value, row) {
-            return row.gender === value;
+            return row.state === value || this.stateMap(row.state) === this.stateMap(value);
         },
         judgeOrderState(state) {
             // 判断是否需要执行调宿操作（更新房间表）
@@ -331,6 +335,26 @@ export default {
                 if (res.code === "0") {
                     ElMessage({
                         message: "调宿已完成",
+                        type: "success",
+                    });
+                    this.load();
+                } else {
+                    ElMessage({
+                        message: res.msg,
+                        type: "error",
+                    });
+                }
+            });
+        },
+        // 管理员拒绝执行已审核通过的调宿申请
+        handleRejectExecute(row) {
+            const form = JSON.parse(JSON.stringify(row));
+            form.state = '拒绝执行';
+            form.finishTime = this.getCurrentTime();
+            request.put("/adjustRoom/update/false", form).then((res) => {
+                if (res.code === "0") {
+                    ElMessage({
+                        message: "已拒绝执行调宿",
                         type: "success",
                     });
                     this.load();
