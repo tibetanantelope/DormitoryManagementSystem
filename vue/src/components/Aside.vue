@@ -108,6 +108,13 @@ export default {
   },
   methods: {
     init() {
+      const identityStr = window.sessionStorage.getItem("identity");
+      const userStr = window.sessionStorage.getItem("user");
+      if (identityStr && userStr) {
+        this.identity = JSON.parse(identityStr);
+        this.user = JSON.parse(userStr);
+        return;
+      }
       request.get("/main/loadIdentity").then((res) => {
         if (res.code !== "0") {
           ElMessage({

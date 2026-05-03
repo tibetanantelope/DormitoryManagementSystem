@@ -1,6 +1,7 @@
 package com.example.springboot.controller;
 
 import com.example.springboot.common.Result;
+import com.example.springboot.common.AuthContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,7 @@ public class MainController {
      */
     @GetMapping("/loadIdentity")
     public Result<?> loadIdentity(HttpSession session) {
-        Object identity = session.getAttribute("Identity");
+        Object identity = AuthContext.getIdentity(session);
 
         if (identity != null) {
             return Result.success(identity);
@@ -44,8 +45,6 @@ public class MainController {
      */
     @GetMapping("/signOut")
     public Result<?> signOut(HttpSession session) {
-        session.removeAttribute("User");
-        session.removeAttribute("Identity");
         return Result.success();
     }
 }

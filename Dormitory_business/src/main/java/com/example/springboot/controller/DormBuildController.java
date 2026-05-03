@@ -1,6 +1,7 @@
 package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.springboot.common.AuthContext;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.DormBuild;
 import com.example.springboot.service.DormBuildService;
@@ -100,6 +101,6 @@ public class DormBuildController {
 //        }
 
     private boolean isAdmin(HttpSession session) {
-        return "admin".equals(session.getAttribute("Identity"));
+        return AuthContext.isAdmin(session);
     }
 }

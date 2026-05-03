@@ -9,12 +9,23 @@ let token = '';
 // 可以自请求发送前对请求做一些处理
 // 比如统一加token，对请求参数统一加密
 //添加一个请求拦截器
-axios.interceptors.request.use(function (config) {
-    let user = JSON.parse(window.sessionStorage.getItem('access-user'));
-    if (user) {
-        token = user.token;
+request.interceptors.request.use(function (config) {
+    let accessUser = JSON.parse(window.sessionStorage.getItem('access-user'));
+    let user = JSON.parse(window.sessionStorage.getItem('user'));
+    let identity = JSON.parse(window.sessionStorage.getItem('identity'));
+    if (accessUser) {
+        token = accessUser.token;
     }
-    config.headers.common['token'] = token;
+    config.headers['token'] = token;
+    if (identity) {
+        config.headers['X-Identity'] = identity;
+    }
+    if (user && user.username) {
+        config.headers['X-Username'] = user.username;
+    }
+    if (user && user.dormBuildId) {
+        config.headers['X-DormBuild-Id'] = user.dormBuildId;
+    }
     //console.dir(config);
     return config;
 }, function (error) {
@@ -47,4 +58,3 @@ request.interceptors.response.use(
 
 // 以request暴露出去
 export default request
-

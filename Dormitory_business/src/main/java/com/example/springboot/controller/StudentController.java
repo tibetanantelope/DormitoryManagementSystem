@@ -2,6 +2,7 @@ package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.springboot.common.AuthContext;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.DormBuild;
 import com.example.springboot.entity.DormManager;
@@ -90,7 +91,7 @@ public class StudentController {
                               @RequestParam(defaultValue = "") String search,
                               HttpSession session) {
         Page page;
-        if ("dormManager".equals(session.getAttribute("Identity"))) {
+        if ("dormManager".equals(AuthContext.getIdentity(session))) {
             Integer dormBuildId = getDormManagerBuildId(session);
             if (dormBuildId == null) {
                 return Result.error("-1", "无权限操作");
@@ -154,10 +155,14 @@ public class StudentController {
     }
 
     private boolean isAdmin(HttpSession session) {
-        return "admin".equals(session.getAttribute("Identity"));
+        return AuthContext.isAdmin(session);
     }
 
     private Integer getDormManagerBuildId(HttpSession session) {
+        Integer dormBuildId = AuthContext.getDormBuildId(session);
+        if (dormBuildId != null) {
+            return dormBuildId;
+        }
         Object user = session.getAttribute("User");
         if (user instanceof DormManager) {
             return ((DormManager) user).getDormBuildId();
@@ -169,7 +174,7 @@ public class StudentController {
         if (isAdmin(session)) {
             return true;
         }
-        if (!"dormManager".equals(session.getAttribute("Identity"))) {
+        if (!"dormManager".equals(AuthContext.getIdentity(session))) {
             return false;
         }
         Integer dormBuildId = getDormManagerBuildId(session);
