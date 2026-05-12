@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
+﻿-- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
 --
 -- Host: localhost    Database: dormitory
 -- ------------------------------------------------------
@@ -55,7 +55,7 @@ DROP TABLE IF EXISTS `admin`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `admin` (
   `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '用户名',
-  `password` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '密码',
+  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '密码',
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '姓名',
   `gender` enum('男','女') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '男' COMMENT '性别',
   `age` int NOT NULL COMMENT '年龄',
@@ -72,7 +72,7 @@ CREATE TABLE `admin` (
 
 LOCK TABLES `admin` WRITE;
 /*!40000 ALTER TABLE `admin` DISABLE KEYS */;
-INSERT INTO `admin` VALUES ('admin','123456','大强','男',18,'14785412478',NULL,'c4063718784b4e259a61c3e56f2ba01d.png'),('Atest','123456','测试管理员','男',22,'14785412478',NULL,NULL);
+INSERT INTO `admin` VALUES ('admin','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG','大强','男',18,'14785412478',NULL,'c4063718784b4e259a61c3e56f2ba01d.png'),('Atest','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG','测试管理员','男',22,'14785412478',NULL,NULL);
 /*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,7 +111,7 @@ DROP TABLE IF EXISTS `dorm_manager`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dorm_manager` (
   `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '用户名',
-  `password` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '123456' COMMENT '密码',
+  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '密码',
   `dormbuild_id` int NOT NULL COMMENT '所管理的宿舍楼栋号',
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '名字',
   `gender` enum('男','女') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '男' COMMENT '性别',
@@ -129,7 +129,7 @@ CREATE TABLE `dorm_manager` (
 
 LOCK TABLES `dorm_manager` WRITE;
 /*!40000 ALTER TABLE `dorm_manager` DISABLE KEYS */;
-INSERT INTO `dorm_manager` VALUES ('dorm1','123456',1,'张三','男',35,'15222223333','12@email.com',NULL),('dorm2','123456',2,'李四','女',55,'15333332222',NULL,NULL),('dorm3','123456',3,'王五','男',38,'15855552222',NULL,NULL),('dorm4','123456',4,'赵花','女',40,'15877776666',NULL,NULL),('Mtest','123456',2,'宿管测试','男',22,'15899999999',NULL,NULL);
+INSERT INTO `dorm_manager` VALUES ('dorm1','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',1,'张三','男',35,'15222223333','12@email.com',NULL),('dorm2','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',2,'李四','女',55,'15333332222',NULL,NULL),('dorm3','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',3,'王五','男',38,'15855552222',NULL,NULL),('dorm4','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',4,'赵花','女',40,'15877776666',NULL,NULL),('Mtest','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',2,'宿管测试','男',22,'15899999999',NULL,NULL);
 /*!40000 ALTER TABLE `dorm_manager` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -230,7 +230,7 @@ DROP TABLE IF EXISTS `student`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `student` (
   `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '学号',
-  `password` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '123456' COMMENT '密码',
+  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '密码',
   `age` int unsigned NOT NULL COMMENT '年龄',
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '姓名',
   `gender` enum('男','女') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '男' COMMENT '性别',
@@ -248,7 +248,7 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES ('Stest','123456',20,'学生测试','男','13233332222',NULL,NULL),('stu1','123456',18,'张三','男','15833332222','123@qq.com','c4063718784b4e259a61c3e56f2ba01d.png'),('stu10','123456',19,'马克','女','15833333333',NULL,NULL),('stu11','123456',16,'巧巧','女','18922223333',NULL,NULL),('stu12','123456',17,'丽丽','女','17922222222',NULL,NULL),('stu13','123456',18,'美美','女','15822222222',NULL,NULL),('stu14','123456',20,'拉拉','女','13355556666',NULL,NULL),('stu15','123456',18,'贝贝','男','15899999999',NULL,NULL),('stu16','123456',18,'力力','男','14596475257',NULL,NULL),('stu17','123456',18,'阿成','男','15896542147',NULL,NULL),('stu18','123456',19,'阿达','女','14785635874','akk@akkmail.com',NULL),('stu19','123456',19,'帕森斯','男','15889658475',NULL,NULL),('stu2','123456',18,'田田','男','15875359641',NULL,NULL),('stu20','123456',21,'柠檬','男','15874563558',NULL,NULL),('stu21','123456',21,'面对','男','15889635874',NULL,NULL),('stu22','123456',25,'等等','男','13412341234','akkk@kkk.com',NULL),('stu3','123456',18,'吉安','男','15798657350',NULL,NULL),('stu4','123456',22,'力力','男','15878965874',NULL,NULL),('stu5','123456',19,'哦哦','男','15897535478',NULL,NULL),('stu6','123456',18,'泡泡','男','18987554765',NULL,NULL),('stu7','123456',15,'刚刚','男','15897543854',NULL,NULL),('stu8','123456',18,'七七','男','12332143215',NULL,NULL),('stu9','123456',20,'德萨','男','15889658741',NULL,NULL);
+INSERT INTO `student` VALUES ('Stest','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',20,'学生测试','男','13233332222',NULL,NULL),('stu1','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',18,'张三','男','15833332222','123@qq.com','c4063718784b4e259a61c3e56f2ba01d.png'),('stu10','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',19,'马克','女','15833333333',NULL,NULL),('stu11','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',16,'巧巧','女','18922223333',NULL,NULL),('stu12','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',17,'丽丽','女','17922222222',NULL,NULL),('stu13','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',18,'美美','女','15822222222',NULL,NULL),('stu14','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',20,'拉拉','女','13355556666',NULL,NULL),('stu15','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',18,'贝贝','男','15899999999',NULL,NULL),('stu16','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',18,'力力','男','14596475257',NULL,NULL),('stu17','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',18,'阿成','男','15896542147',NULL,NULL),('stu18','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',19,'阿达','女','14785635874','akk@akkmail.com',NULL),('stu19','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',19,'帕森斯','男','15889658475',NULL,NULL),('stu2','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',18,'田田','男','15875359641',NULL,NULL),('stu20','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',21,'柠檬','男','15874563558',NULL,NULL),('stu21','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',21,'面对','男','15889635874',NULL,NULL),('stu22','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',25,'等等','男','13412341234','akkk@kkk.com',NULL),('stu3','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',18,'吉安','男','15798657350',NULL,NULL),('stu4','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',22,'力力','男','15878965874',NULL,NULL),('stu5','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',19,'哦哦','男','15897535478',NULL,NULL),('stu6','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',18,'泡泡','男','18987554765',NULL,NULL),('stu7','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',15,'刚刚','男','15897543854',NULL,NULL),('stu8','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',18,'七七','男','12332143215',NULL,NULL),('stu9','$2a$10$zCiQjjGjSO0WWqSqYAzrneft4tNKaz1VENnM8EYG7FkZu1HnAkAXG',20,'德萨','男','15889658741',NULL,NULL);
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 

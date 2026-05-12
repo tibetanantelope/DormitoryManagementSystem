@@ -37,6 +37,19 @@ export default {
                 callback();
             }
         };
+        const checkPassword = (rule, value, callback) => {
+            if (!this.editJudge) {
+                if (!value) {
+                    callback(new Error("请输入密码"));
+                } else if (value.length < 6 || value.length > 32) {
+                    callback(new Error("长度在 6 到 32 个字符"));
+                } else {
+                    callback();
+                }
+            } else {
+                callback();
+            }
+        };
         return {
             showpassword: true,
             image: "",
@@ -92,13 +105,7 @@ export default {
                     {type: "email", message: "请输入正确的邮箱地址", trigger: "blur"},
                 ],
                 password: [
-                    {required: true, message: "请输入密码", trigger: "blur"},
-                    {
-                        min: 6,
-                        max: 32,
-                        message: "长度在 6 到 16 个字符",
-                        trigger: "blur",
-                    },
+                    {validator: checkPassword, trigger: "blur"},
                 ],
                 checkPass: [{validator: checkPass, trigger: "blur"}],
             },
@@ -130,12 +137,11 @@ export default {
         },
         //查询数据，更新session
         find() {
-            this.form = JSON.parse(sessionStorage.getItem("user"));
-            request.post("/" + this.identity + "/login", this.form).then((res) => {
-                //更新sessionStorage
-                window.sessionStorage.setItem("user", JSON.stringify(res.data));
-                //更新页面数据
-                this.load();
+            request.get("/main/loadUserInfo").then((res) => {
+                if (res.code === "0") {
+                    window.sessionStorage.setItem("user", JSON.stringify(res.data));
+                    this.load();
+                }
             });
         },
         Edit() {
@@ -143,6 +149,8 @@ export default {
             this.$nextTick(() => {
                 this.$refs.form.resetFields();
                 this.form = JSON.parse(sessionStorage.getItem("user"));
+                this.form.password = "";
+                this.form.checkPass = "";
             });
         },
         cancel() {
@@ -164,11 +172,11 @@ export default {
                                 type: "success",
                             });
                             //更新sessionStorage
-                            window.sessionStorage.setItem(
-                                "user",
-                                JSON.stringify(this.form)
-                            );
-                            this.find();
+                            const sessionUser = JSON.parse(JSON.stringify(this.form));
+                            sessionUser.password = null;
+                            delete sessionUser.checkPass;
+                            window.sessionStorage.setItem("user", JSON.stringify(sessionUser));
+                            this.load();
                             this.dialogVisible = false;
                         } else {
                             ElMessage({
@@ -186,6 +194,8 @@ export default {
                 this.showpassword = false;
                 this.disabled = false;
                 this.editJudge = false;
+                this.form.password = "";
+                this.form.checkPass = "";
             } else {
                 this.display = {display: "none"};
                 this.showpassword = true;
@@ -223,8 +233,10 @@ export default {
                     });
                     //获取头像文件名
                     this.avatar = res.data;
+                    this.form.avatar = this.avatar;
+                    window.sessionStorage.setItem("user", JSON.stringify(this.form));
                     console.log("上传成功：" + this.avatar);
-                    this.find();
+                    this.load();
                     this.init(this.avatar);
                 } else {
                     ElMessage({

@@ -65,6 +65,7 @@ public class DormManagerController {
                               @RequestParam(defaultValue = "") String search) {
         Page page = dormManagerService.find(pageNum, pageSize, search);
         if (page != null) {
+            clearPagePasswords(page);
             return Result.success(page);
         } else {
             return Result.error("-1", "查询失败");
@@ -78,13 +79,23 @@ public class DormManagerController {
     public Result<?> login(@RequestBody User user, HttpSession session) {
         Object o = dormManagerService.dormManagerLogin(user.getUsername(), user.getPassword());
         if (o != null) {
-            System.out.println(o);
+            clearPassword(o);
             //存入session
             session.setAttribute("Identity", "dormManager");
             session.setAttribute("User", o);
             return Result.success(o);
         } else {
             return Result.error("-1", "用户名或密码错误");
+        }
+    }
+
+    private void clearPagePasswords(Page page) {
+        page.getRecords().forEach(this::clearPassword);
+    }
+
+    private void clearPassword(Object user) {
+        if (user instanceof DormManager) {
+            ((DormManager) user).setPassword(null);
         }
     }
 }

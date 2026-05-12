@@ -26,7 +26,7 @@ public class AdminController {
     public Result<?> login(@RequestBody User user, HttpSession session) {
         Object o = adminService.adminLogin(user.getUsername(), user.getPassword());
         if (o != null) {
-            System.out.println(o);
+            clearPassword(o);
             //存入session
             session.setAttribute("Identity", "admin");
             session.setAttribute("User", o);
@@ -46,6 +46,12 @@ public class AdminController {
             return Result.success();
         } else {
             return Result.error("-1", "更新失败");
+        }
+    }
+
+    private void clearPassword(Object user) {
+        if (user instanceof Admin) {
+            ((Admin) user).setPassword(null);
         }
     }
 }

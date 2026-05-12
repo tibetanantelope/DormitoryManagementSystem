@@ -3,6 +3,7 @@ package com.example.springboot.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.springboot.common.PasswordUtils;
 import com.example.springboot.entity.Student;
 import com.example.springboot.mapper.StudentMapper;
 import com.example.springboot.service.StudentService;
@@ -27,9 +28,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     public Student stuLogin(String username, String password) {
         QueryWrapper<Student> qw = new QueryWrapper<>();
         qw.eq("username", username);
-        qw.eq("password", password);
         Student student = studentMapper.selectOne(qw);
-        if (student != null) {
+        if (student != null && PasswordUtils.matches(password, student.getPassword())) {
             return student;
         } else {
             return null;
@@ -41,6 +41,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
      */
     @Override
     public int addNewStudent(Student student) {
+        student.setPassword(PasswordUtils.encode(student.getPassword()));
         int insert = studentMapper.insert(student);
         return insert;
     }
@@ -82,8 +83,20 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
      */
     @Override
     public int updateNewStudent(Student student) {
+        handlePasswordBeforeUpdate(student);
         int i = studentMapper.updateById(student);
         return i;
+    }
+
+    private void handlePasswordBeforeUpdate(Student student) {
+        if (student.getPassword() == null || student.getPassword().isEmpty()) {
+            Student oldStudent = studentMapper.selectById(student.getUsername());
+            if (oldStudent != null) {
+                student.setPassword(oldStudent.getPassword());
+            }
+            return;
+        }
+        student.setPassword(PasswordUtils.encode(student.getPassword()));
     }
 
     /**

@@ -2,6 +2,9 @@ package com.example.springboot.controller;
 
 import com.example.springboot.common.Result;
 import com.example.springboot.common.AuthContext;
+import com.example.springboot.entity.Admin;
+import com.example.springboot.entity.DormManager;
+import com.example.springboot.entity.Student;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +37,7 @@ public class MainController {
         Object User = session.getAttribute("User");
 
         if (User != null) {
+            clearPassword(User);
             return Result.success(User);
         } else {
             return Result.error("-1", "加载失败");
@@ -46,5 +50,15 @@ public class MainController {
     @GetMapping("/signOut")
     public Result<?> signOut(HttpSession session) {
         return Result.success();
+    }
+
+    private void clearPassword(Object user) {
+        if (user instanceof Admin) {
+            ((Admin) user).setPassword(null);
+        } else if (user instanceof Student) {
+            ((Student) user).setPassword(null);
+        } else if (user instanceof DormManager) {
+            ((DormManager) user).setPassword(null);
+        }
     }
 }

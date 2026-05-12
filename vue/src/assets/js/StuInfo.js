@@ -24,11 +24,24 @@ export default {
             }, 100);
         };
         const checkPass = (rule, value, callback) => {
-            if (!this.editJudge) {
+            if (this.judge === false || !this.editJudge) {
                 if (value == "") {
                     callback(new Error("请再次输入密码"));
                 } else if (value !== this.form.password) {
                     callback(new Error("两次输入密码不一致!"));
+                } else {
+                    callback();
+                }
+            } else {
+                callback();
+            }
+        };
+        const checkPassword = (rule, value, callback) => {
+            if (this.judge === false || !this.editJudge) {
+                if (!value) {
+                    callback(new Error("请输入密码"));
+                } else if (value.length < 6 || value.length > 32) {
+                    callback(new Error("长度在 6 到 32 个字符"));
                 } else {
                     callback();
                 }
@@ -91,13 +104,7 @@ export default {
                     {type: "email", message: "请输入正确的邮箱地址", trigger: "blur"},
                 ],
                 password: [
-                    {required: true, message: "请输入密码", trigger: "blur"},
-                    {
-                        min: 6,
-                        max: 32,
-                        message: "长度在 6 到 16 个字符",
-                        trigger: "blur",
-                    },
+                    {validator: checkPassword, trigger: "blur"},
                 ],
                 checkPass: [{validator: checkPass, trigger: "blur"}],
             },
@@ -185,8 +192,10 @@ export default {
                 this.$refs.form.resetFields();
                 this.judgeAddOrEdit = false;
                 this.editDisplay = {display: "none"};
+                this.display = {display: "flex"};
                 this.disabled = false;
-                this.form = {};
+                this.form = {password: "", checkPass: ""};
+                this.editJudge = true;
                 this.judge = false;
             });
         },
@@ -250,6 +259,8 @@ export default {
                 this.display = {display: "flex"};
                 this.disabled = false;
                 this.editJudge = false;
+                this.form.password = "";
+                this.form.checkPass = "";
             } else {
                 this.showpassword = true;
                 this.display = {display: "none"};
@@ -266,6 +277,8 @@ export default {
             this.$nextTick(() => {
                 this.$refs.form.resetFields();
                 this.form = JSON.parse(JSON.stringify(row));
+                this.form.password = "";
+                this.form.checkPass = "";
                 this.judgeAddOrEdit = true;
                 this.editDisplay = {display: "block"};
                 this.disabled = true;

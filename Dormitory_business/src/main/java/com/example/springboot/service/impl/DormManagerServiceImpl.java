@@ -4,6 +4,7 @@ package com.example.springboot.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.springboot.common.PasswordUtils;
 import com.example.springboot.entity.DormManager;
 import com.example.springboot.mapper.DormManagerMapper;
 import com.example.springboot.service.DormManagerService;
@@ -29,9 +30,8 @@ public class DormManagerServiceImpl extends ServiceImpl<DormManagerMapper, DormM
     public DormManager dormManagerLogin(String username, String password) {
         QueryWrapper<DormManager> qw = new QueryWrapper<>();
         qw.eq("username", username);
-        qw.eq("password", password);
         DormManager dormManager = dormManagerMapper.selectOne(qw);
-        if (dormManager != null) {
+        if (dormManager != null && PasswordUtils.matches(password, dormManager.getPassword())) {
             return dormManager;
         } else {
             return null;
@@ -43,6 +43,7 @@ public class DormManagerServiceImpl extends ServiceImpl<DormManagerMapper, DormM
      */
     @Override
     public int addNewDormManager(DormManager dormManager) {
+        dormManager.setPassword(PasswordUtils.encode(dormManager.getPassword()));
         int insert = dormManagerMapper.insert(dormManager);
         return insert;
     }
@@ -64,8 +65,20 @@ public class DormManagerServiceImpl extends ServiceImpl<DormManagerMapper, DormM
      */
     @Override
     public int updateNewDormManager(DormManager dormManager) {
+        handlePasswordBeforeUpdate(dormManager);
         int i = dormManagerMapper.updateById(dormManager);
         return i;
+    }
+
+    private void handlePasswordBeforeUpdate(DormManager dormManager) {
+        if (dormManager.getPassword() == null || dormManager.getPassword().isEmpty()) {
+            DormManager oldDormManager = dormManagerMapper.selectById(dormManager.getUsername());
+            if (oldDormManager != null) {
+                dormManager.setPassword(oldDormManager.getPassword());
+            }
+            return;
+        }
+        dormManager.setPassword(PasswordUtils.encode(dormManager.getPassword()));
     }
 
     /**

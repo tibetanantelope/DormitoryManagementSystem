@@ -101,6 +101,7 @@ public class StudentController {
             page = studentService.find(pageNum, pageSize, search);
         }
         if (page != null) {
+            clearPagePasswords(page);
             return Result.success(page);
         } else {
             return Result.error("-1", "查询失败");
@@ -112,11 +113,9 @@ public class StudentController {
      */
     @PostMapping("/login")
     public Result<?> login(@RequestBody User user, HttpSession session) {
-        System.out.println(user.getUsername());
-        System.out.println(user.getPassword());
         Object o = studentService.stuLogin(user.getUsername(), user.getPassword());
         if (o != null) {
-            System.out.println(o);
+            clearPassword(o);
             //存入session
             session.setAttribute("Identity", "stu");
             session.setAttribute("User", o);
@@ -148,6 +147,7 @@ public class StudentController {
     public Result<?> exist(@PathVariable String value) {
         Student student = studentService.stuInfo(value);
         if (student != null) {
+            student.setPassword(null);
             return Result.success(student);
         } else {
             return Result.error("-1", "不存在该学生");
@@ -208,5 +208,15 @@ public class StudentController {
             return "女";
         }
         return null;
+    }
+
+    private void clearPagePasswords(Page page) {
+        page.getRecords().forEach(this::clearPassword);
+    }
+
+    private void clearPassword(Object user) {
+        if (user instanceof Student) {
+            ((Student) user).setPassword(null);
+        }
     }
 }
