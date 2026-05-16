@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="980" viewBox="0 0 1500 980">
+  <rect width="100%" height="100%" fill="white"/>
+  <g stroke="#111" stroke-width="3" fill="none" font-family="SimSun, Songti SC, serif" font-size="28">
+    <rect x="650" y="80" width="200" height="70"/>
+    <rect x="650" y="390" width="200" height="70"/>
+    <rect x="220" y="700" width="180" height="70"/>
+    <rect x="650" y="700" width="200" height="70"/>
+    <rect x="1080" y="700" width="180" height="70"/>
+
+    <polygon points="750,230 850,300 750,370 650,300"/>
+    <polygon points="520,535 620,605 520,675 420,605"/>
+    <polygon points="750,535 850,605 750,675 650,605"/>
+    <polygon points="980,535 1080,605 980,675 880,605"/>
+
+    <line x1="750" y1="150" x2="750" y2="230"/>
+    <line x1="750" y1="370" x2="750" y2="390"/>
+    <line x1="650" y1="430" x2="520" y2="535"/>
+    <line x1="620" y1="605" x2="650" y2="735"/>
+    <line x1="750" y1="460" x2="750" y2="535"/>
+    <line x1="750" y1="675" x2="750" y2="700"/>
+    <line x1="850" y1="430" x2="980" y2="535"/>
+    <line x1="1080" y1="605" x2="1080" y2="735"/>
+
+    <ellipse cx="520" cy="45" rx="95" ry="38"/>
+    <ellipse cx="680" cy="35" rx="75" ry="38"/>
+    <ellipse cx="840" cy="35" rx="75" ry="38"/>
+    <ellipse cx="995" cy="45" rx="105" ry="38"/>
+    <line x1="650" y1="95" x2="575" y2="68"/>
+    <line x1="700" y1="80" x2="685" y2="70"/>
+    <line x1="800" y1="80" x2="835" y2="70"/>
+    <line x1="850" y1="95" x2="930" y2="68"/>
+
+    <ellipse cx="505" cy="390" rx="95" ry="38"/>
+    <ellipse cx="505" cy="470" rx="95" ry="38"/>
+    <line x1="650" y1="410" x2="600" y2="400"/>
+    <line x1="650" y1="440" x2="600" y2="460"/>
+
+    <ellipse cx="105" cy="675" rx="95" ry="38"/>
+    <ellipse cx="105" cy="770" rx="95" ry="38"/>
+    <line x1="220" y1="715" x2="195" y2="690"/>
+    <line x1="220" y1="755" x2="195" y2="760"/>
+
+    <ellipse cx="650" cy="875" rx="95" ry="38"/>
+    <ellipse cx="850" cy="875" rx="95" ry="38"/>
+    <line x1="700" y1="770" x2="680" y2="840"/>
+    <line x1="800" y1="770" x2="820" y2="840"/>
+
+    <ellipse cx="1370" cy="675" rx="95" ry="38"/>
+    <ellipse cx="1370" cy="770" rx="95" ry="38"/>
+    <line x1="1260" y1="715" x2="1275" y2="690"/>
+    <line x1="1260" y1="755" x2="1275" y2="760"/>
+  </g>
+  <g fill="#111" font-family="SimSun, Songti SC, serif" font-size="28" text-anchor="middle">
+    <text x="750" y="125">宿舍管理员</text>
+    <text x="750" y="435">宿舍楼</text>
+    <text x="310" y="745">学生</text>
+    <text x="750" y="745">调宿申请</text>
+    <text x="1170" y="745">报修申请</text>
+
+    <text x="750" y="310">负责</text>
+    <text x="520" y="615">管理</text>
+    <text x="750" y="615">审核</text>
+    <text x="980" y="615">处理</text>
+
+    <text x="520" y="53">账号</text>
+    <text x="680" y="43">姓名</text>
+    <text x="840" y="43">性别</text>
+    <text x="995" y="53">手机号</text>
+
+    <text x="505" y="398">楼栋号</text>
+    <text x="505" y="478">楼宇类型</text>
+
+    <text x="105" y="683">学号</text>
+    <text x="105" y="778">姓名</text>
+
+    <text x="650" y="883">申请状态</text>
+    <text x="850" y="883">处理时间</text>
+
+    <text x="1370" y="683">报修状态</text>
+    <text x="1370" y="778">处理时间</text>
+
+    <text x="715" y="220">1</text>
+    <text x="715" y="385">1</text>
+    <text x="635" y="445">1</text>
+    <text x="625" y="715">N</text>
+    <text x="715" y="525">1</text>
+    <text x="715" y="690">N</text>
+    <text x="865" y="445">1</text>
+    <text x="1080" y="690">N</text>
+  </g>
+</svg>

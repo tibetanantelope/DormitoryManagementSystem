@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080">
+  <rect width="100%" height="100%" fill="white"/>
+  <g stroke="#111" stroke-width="3" fill="none" font-family="SimSun, Songti SC, serif" font-size="28">
+    <rect x="700" y="70" width="180" height="70"/>
+    <rect x="220" y="360" width="180" height="70"/>
+    <rect x="700" y="360" width="180" height="70"/>
+    <rect x="1180" y="360" width="180" height="70"/>
+    <rect x="220" y="760" width="180" height="70"/>
+    <rect x="700" y="760" width="180" height="70"/>
+    <rect x="1180" y="760" width="180" height="70"/>
+
+    <polygon points="790,210 890,280 790,350 690,280"/>
+    <polygon points="520,365 620,435 520,505 420,435"/>
+    <polygon points="1060,365 1160,435 1060,505 960,435"/>
+    <polygon points="520,650 620,720 520,790 420,720"/>
+    <polygon points="790,650 890,720 790,790 690,720"/>
+    <polygon points="1060,650 1160,720 1060,790 960,720"/>
+
+    <line x1="790" y1="140" x2="790" y2="210"/>
+    <line x1="690" y1="280" x2="400" y2="395"/>
+    <line x1="790" y1="350" x2="790" y2="360"/>
+    <line x1="890" y1="280" x2="1180" y2="395"/>
+    <line x1="400" y1="395" x2="420" y2="435"/>
+    <line x1="620" y1="435" x2="700" y2="395"/>
+    <line x1="880" y1="395" x2="960" y2="435"/>
+    <line x1="1160" y1="435" x2="1180" y2="395"/>
+    <line x1="400" y1="430" x2="520" y2="650"/>
+    <line x1="620" y1="720" x2="700" y2="795"/>
+    <line x1="790" y1="430" x2="790" y2="650"/>
+    <line x1="790" y1="790" x2="790" y2="760"/>
+    <line x1="1180" y1="430" x2="1060" y2="650"/>
+    <line x1="1160" y1="720" x2="1180" y2="795"/>
+
+    <ellipse cx="610" cy="35" rx="90" ry="38"/>
+    <ellipse cx="790" cy="25" rx="90" ry="38"/>
+    <ellipse cx="970" cy="35" rx="90" ry="38"/>
+    <line x1="700" y1="80" x2="660" y2="62"/>
+    <line x1="790" y1="70" x2="790" y2="63"/>
+    <line x1="880" y1="80" x2="920" y2="62"/>
+
+    <ellipse cx="105" cy="325" rx="95" ry="38"/>
+    <ellipse cx="105" cy="420" rx="95" ry="38"/>
+    <line x1="220" y1="375" x2="195" y2="345"/>
+    <line x1="220" y1="415" x2="195" y2="415"/>
+
+    <ellipse cx="700" cy="520" rx="95" ry="38"/>
+    <ellipse cx="880" cy="520" rx="95" ry="38"/>
+    <line x1="735" y1="430" x2="720" y2="487"/>
+    <line x1="845" y1="430" x2="860" y2="487"/>
+
+    <ellipse cx="1490" cy="325" rx="95" ry="38"/>
+    <ellipse cx="1490" cy="420" rx="95" ry="38"/>
+    <line x1="1360" y1="375" x2="1395" y2="345"/>
+    <line x1="1360" y1="415" x2="1395" y2="415"/>
+
+    <ellipse cx="105" cy="725" rx="95" ry="38"/>
+    <ellipse cx="105" cy="820" rx="95" ry="38"/>
+    <line x1="220" y1="775" x2="195" y2="745"/>
+    <line x1="220" y1="815" x2="195" y2="815"/>
+
+    <ellipse cx="680" cy="955" rx="95" ry="38"/>
+    <ellipse cx="900" cy="955" rx="95" ry="38"/>
+    <line x1="735" y1="830" x2="700" y2="920"/>
+    <line x1="845" y1="830" x2="880" y2="920"/>
+
+    <ellipse cx="1490" cy="725" rx="95" ry="38"/>
+    <ellipse cx="1490" cy="820" rx="95" ry="38"/>
+    <line x1="1360" y1="775" x2="1395" y2="745"/>
+    <line x1="1360" y1="815" x2="1395" y2="815"/>
+  </g>
+  <g fill="#111" font-family="SimSun, Songti SC, serif" font-size="28" text-anchor="middle">
+    <text x="790" y="115">后勤管理员</text>
+    <text x="310" y="405">宿舍楼</text>
+    <text x="790" y="405">宿舍房间</text>
+    <text x="1270" y="405">宿舍管理员</text>
+    <text x="310" y="805">学生</text>
+    <text x="790" y="805">调宿申请</text>
+    <text x="1270" y="805">公告</text>
+
+    <text x="790" y="290">管理</text>
+    <text x="520" y="445">包含</text>
+    <text x="1060" y="445">分配</text>
+    <text x="520" y="730">管理</text>
+    <text x="790" y="730">执行</text>
+    <text x="1060" y="730">发布</text>
+
+    <text x="610" y="43">账号</text>
+    <text x="790" y="33">姓名</text>
+    <text x="970" y="43">手机号</text>
+    <text x="105" y="333">楼栋号</text>
+    <text x="105" y="428">楼宇类型</text>
+    <text x="700" y="528">房间号</text>
+    <text x="880" y="528">已住人数</text>
+    <text x="1490" y="333">账号</text>
+    <text x="1490" y="428">姓名</text>
+    <text x="105" y="733">学号</text>
+    <text x="105" y="828">姓名</text>
+    <text x="680" y="963">申请状态</text>
+    <text x="900" y="963">处理时间</text>
+    <text x="1490" y="733">标题</text>
+    <text x="1490" y="828">发布时间</text>
+
+    <text x="755" y="200">1</text>
+    <text x="650" y="270">N</text>
+    <text x="755" y="350">N</text>
+    <text x="930" y="270">N</text>
+    <text x="400" y="430">1</text>
+    <text x="650" y="420">N</text>
+    <text x="930" y="420">1</text>
+    <text x="1180" y="430">N</text>
+    <text x="400" y="455">1</text>
+    <text x="650" y="705">N</text>
+    <text x="755" y="635">1</text>
+    <text x="755" y="805">N</text>
+    <text x="1180" y="455">1</text>
+    <text x="1170" y="705">N</text>
+  </g>
+</svg>

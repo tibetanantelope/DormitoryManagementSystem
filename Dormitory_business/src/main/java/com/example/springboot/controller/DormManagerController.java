@@ -8,7 +8,6 @@ import com.example.springboot.service.DormManagerService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/dormManager")
@@ -76,13 +75,10 @@ public class DormManagerController {
      * 宿管登录
      */
     @PostMapping("/login")
-    public Result<?> login(@RequestBody User user, HttpSession session) {
+    public Result<?> login(@RequestBody User user) {
         Object o = dormManagerService.dormManagerLogin(user.getUsername(), user.getPassword());
         if (o != null) {
             clearPassword(o);
-            //存入session
-            session.setAttribute("Identity", "dormManager");
-            session.setAttribute("User", o);
             return Result.success(o);
         } else {
             return Result.error("-1", "用户名或密码错误");

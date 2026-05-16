@@ -8,7 +8,6 @@ import com.example.springboot.service.AdminService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/admin")
@@ -23,13 +22,10 @@ public class AdminController {
      * 管理员登录
      */
     @PostMapping("/login")
-    public Result<?> login(@RequestBody User user, HttpSession session) {
+    public Result<?> login(@RequestBody User user) {
         Object o = adminService.adminLogin(user.getUsername(), user.getPassword());
         if (o != null) {
             clearPassword(o);
-            //存入session
-            session.setAttribute("Identity", "admin");
-            session.setAttribute("User", o);
             return Result.success(o);
         } else {
             return Result.error("-1", "用户名或密码错误");

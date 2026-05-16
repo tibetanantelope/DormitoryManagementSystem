@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050">
+  <rect width="100%" height="100%" fill="white"/>
+  <g stroke="#111" stroke-width="3" fill="none" font-family="SimSun, Songti SC, serif" font-size="28">
+    <!-- entities -->
+    <rect x="710" y="70" width="180" height="70"/>
+    <rect x="220" y="380" width="180" height="70"/>
+    <rect x="710" y="380" width="180" height="70"/>
+    <rect x="520" y="770" width="200" height="70"/>
+    <rect x="1040" y="770" width="200" height="70"/>
+
+    <!-- relationships -->
+    <polygon points="800,220 900,290 800,360 700,290"/>
+    <polygon points="520,385 620,455 520,525 420,455"/>
+    <polygon points="620,625 720,695 620,765 520,695"/>
+    <polygon points="1040,625 1140,695 1040,765 940,695"/>
+    <polygon points="910,500 1010,570 910,640 810,570"/>
+
+    <!-- relation lines -->
+    <line x1="800" y1="140" x2="800" y2="220"/>
+    <line x1="800" y1="360" x2="800" y2="380"/>
+    <line x1="400" y1="415" x2="420" y2="455"/>
+    <line x1="620" y1="455" x2="710" y2="415"/>
+    <line x1="760" y1="450" x2="620" y2="625"/>
+    <line x1="620" y1="765" x2="620" y2="770"/>
+    <line x1="840" y1="450" x2="1040" y2="625"/>
+    <line x1="1040" y1="765" x2="1140" y2="770"/>
+    <line x1="890" y1="415" x2="910" y2="500"/>
+    <line x1="1010" y1="570" x2="1085" y2="770"/>
+
+    <!-- student attrs -->
+    <ellipse cx="565" cy="35" rx="90" ry="38"/>
+    <ellipse cx="720" cy="25" rx="75" ry="38"/>
+    <ellipse cx="880" cy="25" rx="75" ry="38"/>
+    <ellipse cx="1035" cy="35" rx="95" ry="38"/>
+    <line x1="710" y1="85" x2="620" y2="62"/>
+    <line x1="750" y1="70" x2="725" y2="62"/>
+    <line x1="850" y1="70" x2="875" y2="62"/>
+    <line x1="890" y1="85" x2="970" y2="62"/>
+
+    <!-- building attrs -->
+    <ellipse cx="95" cy="330" rx="95" ry="38"/>
+    <ellipse cx="95" cy="415" rx="95" ry="38"/>
+    <ellipse cx="95" cy="500" rx="95" ry="38"/>
+    <line x1="220" y1="395" x2="185" y2="350"/>
+    <line x1="220" y1="415" x2="190" y2="415"/>
+    <line x1="220" y1="435" x2="185" y2="480"/>
+
+    <!-- room attrs -->
+    <ellipse cx="730" cy="535" rx="90" ry="38"/>
+    <ellipse cx="885" cy="535" rx="75" ry="38"/>
+    <ellipse cx="1045" cy="535" rx="100" ry="38"/>
+    <line x1="750" y1="450" x2="735" y2="500"/>
+    <line x1="810" y1="450" x2="865" y2="500"/>
+    <line x1="885" y1="450" x2="995" y2="500"/>
+
+    <!-- adjust attrs -->
+    <ellipse cx="425" cy="930" rx="95" ry="38"/>
+    <ellipse cx="620" cy="960" rx="95" ry="38"/>
+    <ellipse cx="815" cy="930" rx="95" ry="38"/>
+    <line x1="560" y1="840" x2="470" y2="900"/>
+    <line x1="620" y1="840" x2="620" y2="922"/>
+    <line x1="680" y1="840" x2="770" y2="900"/>
+
+    <!-- repair attrs -->
+    <ellipse cx="965" cy="930" rx="95" ry="38"/>
+    <ellipse cx="1140" cy="960" rx="95" ry="38"/>
+    <ellipse cx="1315" cy="930" rx="95" ry="38"/>
+    <line x1="1080" y1="840" x2="1010" y2="900"/>
+    <line x1="1140" y1="840" x2="1140" y2="922"/>
+    <line x1="1200" y1="840" x2="1270" y2="900"/>
+  </g>
+  <g fill="#111" font-family="SimSun, Songti SC, serif" font-size="28" text-anchor="middle">
+    <text x="800" y="115">学生</text>
+    <text x="310" y="425">宿舍楼</text>
+    <text x="800" y="425">宿舍房间</text>
+    <text x="620" y="815">调宿申请</text>
+    <text x="1140" y="815">报修申请</text>
+
+    <text x="800" y="300">入住</text>
+    <text x="520" y="465">包含</text>
+    <text x="620" y="705">提交</text>
+    <text x="1040" y="705">提交</text>
+    <text x="910" y="580">发生</text>
+
+    <text x="565" y="43">学号</text>
+    <text x="720" y="33">姓名</text>
+    <text x="880" y="33">性别</text>
+    <text x="1035" y="43">手机号</text>
+
+    <text x="95" y="338">楼栋号</text>
+    <text x="95" y="423">楼宇名称</text>
+    <text x="95" y="508">楼宇类型</text>
+
+    <text x="730" y="543">房间号</text>
+    <text x="885" y="543">楼层</text>
+    <text x="1045" y="543">床位状态</text>
+
+    <text x="425" y="938">申请时间</text>
+    <text x="620" y="968">申请状态</text>
+    <text x="815" y="938">目标床位</text>
+
+    <text x="965" y="938">报修标题</text>
+    <text x="1140" y="968">报修状态</text>
+    <text x="1315" y="938">提交时间</text>
+
+    <text x="765" y="205">1</text>
+    <text x="765" y="370">1</text>
+    <text x="400" y="410">1</text>
+    <text x="660" y="435">N</text>
+    <text x="700" y="470">1</text>
+    <text x="620" y="610">N</text>
+    <text x="860" y="470">1</text>
+    <text x="1040" y="610">N</text>
+    <text x="900" y="485">1</text>
+    <text x="1080" y="755">N</text>
+  </g>
+</svg>

@@ -1,6 +1,5 @@
 package com.example.springboot.common;
 
-import com.example.springboot.entity.DormManager;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -22,6 +21,11 @@ public class AuthContext {
         return "admin".equals(getIdentity(session));
     }
 
+    public static String getUsername() {
+        String username = getHeader("X-Username");
+        return username == null || username.isEmpty() ? null : username;
+    }
+
     public static Integer getDormBuildId(HttpSession session) {
         String headerDormBuildId = getHeader("X-DormBuild-Id");
         if (headerDormBuildId != null && !headerDormBuildId.isEmpty()) {
@@ -30,10 +34,6 @@ public class AuthContext {
             } catch (NumberFormatException ignored) {
                 return null;
             }
-        }
-        Object user = session == null ? null : session.getAttribute("User");
-        if (user instanceof DormManager) {
-            return ((DormManager) user).getDormBuildId();
         }
         return null;
     }

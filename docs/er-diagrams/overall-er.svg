@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1300" viewBox="0 0 1900 1300">
+  <rect width="100%" height="100%" fill="white"/>
+  <g stroke="#111" stroke-width="3" fill="none" font-family="SimSun, Songti SC, serif" font-size="26">
+    <rect x="830" y="60" width="200" height="70"/>
+    <rect x="260" y="315" width="180" height="70"/>
+    <rect x="830" y="315" width="180" height="70"/>
+    <rect x="1420" y="315" width="200" height="70"/>
+    <rect x="150" y="760" width="180" height="70"/>
+    <rect x="540" y="760" width="180" height="70"/>
+    <rect x="930" y="760" width="180" height="70"/>
+    <rect x="1320" y="760" width="180" height="70"/>
+    <rect x="1600" y="760" width="180" height="70"/>
+
+    <polygon points="930,185 1030,255 930,325 830,255"/>
+    <polygon points="635,360 735,430 635,500 535,430"/>
+    <polygon points="1225,360 1325,430 1225,500 1125,430"/>
+    <polygon points="345,585 445,655 345,725 245,655"/>
+    <polygon points="735,585 835,655 735,725 635,655"/>
+    <polygon points="1025,585 1125,655 1025,725 925,655"/>
+    <polygon points="1310,585 1410,655 1310,725 1210,655"/>
+    <polygon points="1660,585 1760,655 1660,725 1560,655"/>
+
+    <line x1="930" y1="130" x2="930" y2="185"/>
+    <line x1="830" y1="255" x2="440" y2="350"/>
+    <line x1="930" y1="325" x2="920" y2="315"/>
+    <line x1="1030" y1="255" x2="1420" y2="350"/>
+    <line x1="440" y1="350" x2="535" y2="430"/>
+    <line x1="735" y1="430" x2="830" y2="350"/>
+    <line x1="1010" y1="350" x2="1125" y2="430"/>
+    <line x1="1325" y1="430" x2="1420" y2="350"/>
+    <line x1="260" y1="385" x2="345" y2="585"/>
+    <line x1="445" y1="655" x2="540" y2="795"/>
+    <line x1="440" y1="385" x2="735" y2="585"/>
+    <line x1="835" y1="655" x2="930" y2="795"/>
+    <line x1="920" y1="385" x2="1025" y2="585"/>
+    <line x1="1025" y1="725" x2="1020" y2="760"/>
+    <line x1="1010" y1="385" x2="1310" y2="585"/>
+    <line x1="1410" y1="655" x2="1420" y2="795"/>
+    <line x1="1620" y1="385" x2="1660" y2="585"/>
+    <line x1="1660" y1="725" x2="1690" y2="760"/>
+
+    <!-- attrs -->
+    <ellipse cx="740" cy="25" rx="85" ry="36"/>
+    <ellipse cx="930" cy="25" rx="85" ry="36"/>
+    <ellipse cx="1120" cy="25" rx="95" ry="36"/>
+    <line x1="850" y1="70" x2="790" y2="48"/>
+    <line x1="930" y1="60" x2="930" y2="61"/>
+    <line x1="1010" y1="70" x2="1060" y2="48"/>
+
+    <ellipse cx="95" cy="270" rx="85" ry="36"/>
+    <ellipse cx="95" cy="360" rx="85" ry="36"/>
+    <line x1="260" y1="330" x2="180" y2="288"/>
+    <line x1="260" y1="365" x2="180" y2="360"/>
+
+    <ellipse cx="810" cy="455" rx="85" ry="36"/>
+    <ellipse cx="1030" cy="455" rx="95" ry="36"/>
+    <line x1="860" y1="385" x2="830" y2="422"/>
+    <line x1="980" y1="385" x2="1000" y2="422"/>
+
+    <ellipse cx="1775" cy="270" rx="85" ry="36"/>
+    <ellipse cx="1775" cy="360" rx="85" ry="36"/>
+    <line x1="1620" y1="330" x2="1690" y2="288"/>
+    <line x1="1620" y1="365" x2="1690" y2="360"/>
+
+    <ellipse cx="75" cy="725" rx="75" ry="36"/>
+    <ellipse cx="75" cy="820" rx="75" ry="36"/>
+    <line x1="150" y1="775" x2="140" y2="742"/>
+    <line x1="150" y1="815" x2="140" y2="815"/>
+
+    <ellipse cx="540" cy="930" rx="85" ry="36"/>
+    <ellipse cx="720" cy="930" rx="85" ry="36"/>
+    <line x1="585" y1="830" x2="565" y2="895"/>
+    <line x1="675" y1="830" x2="695" y2="895"/>
+
+    <ellipse cx="930" cy="930" rx="85" ry="36"/>
+    <ellipse cx="1110" cy="930" rx="85" ry="36"/>
+    <line x1="975" y1="830" x2="950" y2="895"/>
+    <line x1="1065" y1="830" x2="1090" y2="895"/>
+
+    <ellipse cx="1320" cy="930" rx="85" ry="36"/>
+    <ellipse cx="1500" cy="930" rx="85" ry="36"/>
+    <line x1="1365" y1="830" x2="1340" y2="895"/>
+    <line x1="1455" y1="830" x2="1480" y2="895"/>
+
+    <ellipse cx="1600" cy="930" rx="85" ry="36"/>
+    <ellipse cx="1780" cy="930" rx="85" ry="36"/>
+    <line x1="1645" y1="830" x2="1620" y2="895"/>
+    <line x1="1735" y1="830" x2="1760" y2="895"/>
+  </g>
+  <g fill="#111" font-family="SimSun, Songti SC, serif" font-size="26" text-anchor="middle">
+    <text x="930" y="105">后勤管理员</text>
+    <text x="350" y="360">宿舍楼</text>
+    <text x="920" y="360">宿舍房间</text>
+    <text x="1520" y="360">宿舍管理员</text>
+    <text x="240" y="805">学生</text>
+    <text x="630" y="805">调宿申请</text>
+    <text x="1020" y="805">报修申请</text>
+    <text x="1410" y="805">公告</text>
+    <text x="1690" y="805">访客</text>
+
+    <text x="930" y="265">管理</text>
+    <text x="635" y="440">包含</text>
+    <text x="1225" y="440">分配</text>
+    <text x="345" y="665">入住</text>
+    <text x="735" y="665">提交</text>
+    <text x="1025" y="665">报修</text>
+    <text x="1310" y="665">发布</text>
+    <text x="1660" y="665">登记</text>
+
+    <text x="740" y="33">账号</text>
+    <text x="930" y="33">姓名</text>
+    <text x="1120" y="33">手机号</text>
+    <text x="95" y="278">楼栋号</text>
+    <text x="95" y="368">楼宇类型</text>
+    <text x="810" y="463">房间号</text>
+    <text x="1030" y="463">已住人数</text>
+    <text x="1775" y="278">账号</text>
+    <text x="1775" y="368">姓名</text>
+    <text x="75" y="733">学号</text>
+    <text x="75" y="828">姓名</text>
+    <text x="540" y="938">申请状态</text>
+    <text x="720" y="938">处理时间</text>
+    <text x="930" y="938">报修标题</text>
+    <text x="1110" y="938">报修状态</text>
+    <text x="1320" y="938">标题</text>
+    <text x="1500" y="938">发布时间</text>
+    <text x="1600" y="938">姓名</text>
+    <text x="1780" y="938">来访时间</text>
+
+    <text x="895" y="175">1</text>
+    <text x="790" y="245">N</text>
+    <text x="895" y="315">N</text>
+    <text x="1065" y="245">N</text>
+    <text x="440" y="390">1</text>
+    <text x="780" y="415">N</text>
+    <text x="1070" y="415">1</text>
+    <text x="1420" y="390">N</text>
+    <text x="260" y="430">1</text>
+    <text x="500" y="760">N</text>
+    <text x="440" y="430">1</text>
+    <text x="900" y="760">N</text>
+    <text x="920" y="430">1</text>
+    <text x="995" y="760">N</text>
+    <text x="1010" y="430">1</text>
+    <text x="1410" y="760">N</text>
+    <text x="1620" y="430">1</text>
+    <text x="1660" y="760">N</text>
+  </g>
+</svg>

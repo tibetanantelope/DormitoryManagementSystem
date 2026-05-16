@@ -31,6 +31,9 @@ export default {
             this.$refs.form.validate((valid) => {
                 if (valid) {
                     this.identity = this.form.identity;
+                    window.sessionStorage.removeItem("user");
+                    window.sessionStorage.removeItem("identity");
+                    window.sessionStorage.removeItem("access-user");
                     request.post("/" + this.identity + "/login", this.form).then((res) => {
                         if (res.code === "0") {
                             ElMessage({

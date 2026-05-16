@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.springboot.common.AuthContext;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.DormBuild;
-import com.example.springboot.entity.DormManager;
 import com.example.springboot.entity.DormRoom;
 import com.example.springboot.entity.Student;
 import com.example.springboot.entity.User;
@@ -112,13 +111,10 @@ public class StudentController {
      * 学生登录
      */
     @PostMapping("/login")
-    public Result<?> login(@RequestBody User user, HttpSession session) {
+    public Result<?> login(@RequestBody User user) {
         Object o = studentService.stuLogin(user.getUsername(), user.getPassword());
         if (o != null) {
             clearPassword(o);
-            //存入session
-            session.setAttribute("Identity", "stu");
-            session.setAttribute("User", o);
             return Result.success(o);
         } else {
             return Result.error("-1", "用户名或密码错误");
@@ -159,15 +155,7 @@ public class StudentController {
     }
 
     private Integer getDormManagerBuildId(HttpSession session) {
-        Integer dormBuildId = AuthContext.getDormBuildId(session);
-        if (dormBuildId != null) {
-            return dormBuildId;
-        }
-        Object user = session.getAttribute("User");
-        if (user instanceof DormManager) {
-            return ((DormManager) user).getDormBuildId();
-        }
-        return null;
+        return AuthContext.getDormBuildId(session);
     }
 
     private boolean canManageStudent(HttpSession session, String username) {
