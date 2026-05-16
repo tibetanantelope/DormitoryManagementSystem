@@ -13,7 +13,9 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -185,6 +187,19 @@ public class AdjustRoomServiceImpl extends ServiceImpl<AdjustRoomMapper, AdjustR
 
         qw.orderByDesc("apply_time");
         return adjustRoomMapper.selectPage(page, qw);
+    }
+
+    /**
+     * 管理员执行调宿存储过程
+     */
+    @Override
+    public Map<String, Object> executeAdjustRoom(Integer adjustId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("adjustId", adjustId);
+        params.put("resultCode", null);
+        params.put("resultMsg", null);
+        adjustRoomMapper.executeAdjustRoom(params);
+        return params;
     }
 
 }

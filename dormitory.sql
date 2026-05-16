@@ -38,6 +38,165 @@ CREATE TABLE `adjust_room` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Stored procedures
+--
+
+DROP PROCEDURE IF EXISTS `sp_execute_adjust_room`;
+DELIMITER ;;
+CREATE PROCEDURE `sp_execute_adjust_room`(
+  IN p_adjust_id INT,
+  OUT p_result_code INT,
+  OUT p_result_msg VARCHAR(255)
+)
+proc: BEGIN
+  DECLARE v_username VARCHAR(255);
+  DECLARE v_current_room_id INT;
+  DECLARE v_current_bed_id INT;
+  DECLARE v_towards_room_id INT;
+  DECLARE v_towards_bed_id INT;
+  DECLARE v_state VARCHAR(20);
+  DECLARE v_current_bed_value VARCHAR(255);
+  DECLARE v_target_bed_value VARCHAR(255);
+  DECLARE v_current_room_count INT DEFAULT 0;
+  DECLARE v_target_room_count INT DEFAULT 0;
+
+  SET p_result_code = -5;
+  SET p_result_msg = '执行调宿失败';
+
+  SELECT username, currentroom_id, currentbed_id, towardsroom_id, towardsbed_id, state
+    INTO v_username, v_current_room_id, v_current_bed_id, v_towards_room_id, v_towards_bed_id, v_state
+  FROM adjust_room
+  WHERE id = p_adjust_id
+  LIMIT 1;
+
+  IF v_username IS NULL THEN
+    SET p_result_code = -1;
+    SET p_result_msg = '调宿申请不存在';
+    LEAVE proc;
+  END IF;
+
+  IF v_state <> '通过' THEN
+    SET p_result_code = -2;
+    SET p_result_msg = '只有审核通过的申请才能执行调宿';
+    LEAVE proc;
+  END IF;
+
+  SELECT COUNT(*) INTO v_current_room_count
+  FROM dorm_room
+  WHERE dormroom_id = v_current_room_id;
+
+  IF v_current_room_count = 0 THEN
+    SET p_result_code = -4;
+    SET p_result_msg = '原床位信息不匹配，无法执行调宿';
+    LEAVE proc;
+  END IF;
+
+  SELECT CASE v_current_bed_id
+           WHEN 1 THEN first_bed
+           WHEN 2 THEN second_bed
+           WHEN 3 THEN third_bed
+           WHEN 4 THEN fourth_bed
+           ELSE NULL
+         END
+    INTO v_current_bed_value
+  FROM dorm_room
+  WHERE dormroom_id = v_current_room_id
+  LIMIT 1;
+
+  IF v_current_bed_value IS NULL OR v_current_bed_value <> v_username THEN
+    SET p_result_code = -4;
+    SET p_result_msg = '原床位信息不匹配，无法执行调宿';
+    LEAVE proc;
+  END IF;
+
+  SELECT COUNT(*) INTO v_target_room_count
+  FROM dorm_room
+  WHERE dormroom_id = v_towards_room_id;
+
+  IF v_target_room_count = 0 THEN
+    SET p_result_code = -3;
+    SET p_result_msg = '目标床位已有人';
+    LEAVE proc;
+  END IF;
+
+  SELECT CASE v_towards_bed_id
+           WHEN 1 THEN first_bed
+           WHEN 2 THEN second_bed
+           WHEN 3 THEN third_bed
+           WHEN 4 THEN fourth_bed
+           ELSE NULL
+         END
+    INTO v_target_bed_value
+  FROM dorm_room
+  WHERE dormroom_id = v_towards_room_id
+  LIMIT 1;
+
+  IF v_target_bed_value IS NOT NULL AND v_target_bed_value <> '' THEN
+    SET p_result_code = -3;
+    SET p_result_msg = '目标床位已有人';
+    LEAVE proc;
+  END IF;
+
+  IF v_current_bed_id = 1 THEN
+    UPDATE dorm_room SET first_bed = NULL WHERE dormroom_id = v_current_room_id AND first_bed = v_username;
+  ELSEIF v_current_bed_id = 2 THEN
+    UPDATE dorm_room SET second_bed = NULL WHERE dormroom_id = v_current_room_id AND second_bed = v_username;
+  ELSEIF v_current_bed_id = 3 THEN
+    UPDATE dorm_room SET third_bed = NULL WHERE dormroom_id = v_current_room_id AND third_bed = v_username;
+  ELSEIF v_current_bed_id = 4 THEN
+    UPDATE dorm_room SET fourth_bed = NULL WHERE dormroom_id = v_current_room_id AND fourth_bed = v_username;
+  ELSE
+    SET p_result_code = -4;
+    SET p_result_msg = '原床位信息不匹配，无法执行调宿';
+    LEAVE proc;
+  END IF;
+
+  IF ROW_COUNT() <> 1 THEN
+    SET p_result_code = -4;
+    SET p_result_msg = '原床位信息不匹配，无法执行调宿';
+    LEAVE proc;
+  END IF;
+
+  IF v_towards_bed_id = 1 THEN
+    UPDATE dorm_room SET first_bed = v_username WHERE dormroom_id = v_towards_room_id AND first_bed IS NULL;
+  ELSEIF v_towards_bed_id = 2 THEN
+    UPDATE dorm_room SET second_bed = v_username WHERE dormroom_id = v_towards_room_id AND second_bed IS NULL;
+  ELSEIF v_towards_bed_id = 3 THEN
+    UPDATE dorm_room SET third_bed = v_username WHERE dormroom_id = v_towards_room_id AND third_bed IS NULL;
+  ELSEIF v_towards_bed_id = 4 THEN
+    UPDATE dorm_room SET fourth_bed = v_username WHERE dormroom_id = v_towards_room_id AND fourth_bed IS NULL;
+  ELSE
+    SET p_result_code = -3;
+    SET p_result_msg = '目标床位已有人';
+    LEAVE proc;
+  END IF;
+
+  IF ROW_COUNT() <> 1 THEN
+    IF v_current_bed_id = 1 THEN
+      UPDATE dorm_room SET first_bed = v_username WHERE dormroom_id = v_current_room_id AND first_bed IS NULL;
+    ELSEIF v_current_bed_id = 2 THEN
+      UPDATE dorm_room SET second_bed = v_username WHERE dormroom_id = v_current_room_id AND second_bed IS NULL;
+    ELSEIF v_current_bed_id = 3 THEN
+      UPDATE dorm_room SET third_bed = v_username WHERE dormroom_id = v_current_room_id AND third_bed IS NULL;
+    ELSEIF v_current_bed_id = 4 THEN
+      UPDATE dorm_room SET fourth_bed = v_username WHERE dormroom_id = v_current_room_id AND fourth_bed IS NULL;
+    END IF;
+    SET p_result_code = -3;
+    SET p_result_msg = '目标床位已有人';
+    LEAVE proc;
+  END IF;
+
+  UPDATE adjust_room
+  SET state = '处理中',
+      finish_time = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s')
+  WHERE id = p_adjust_id;
+
+  SET p_result_code = 1;
+  SET p_result_msg = '调宿执行成功';
+END;;
+DELIMITER ;
+
+--
 -- Dumping data for table `adjust_room`
 --
 
@@ -153,6 +312,38 @@ CREATE TABLE `dorm_room` (
   PRIMARY KEY (`dormroom_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Triggers for table `dorm_room`
+--
+
+DROP TRIGGER IF EXISTS `trg_dorm_room_before_insert`;
+DELIMITER ;;
+CREATE TRIGGER `trg_dorm_room_before_insert`
+BEFORE INSERT ON `dorm_room`
+FOR EACH ROW
+BEGIN
+  SET NEW.current_capacity =
+      (CASE WHEN NEW.first_bed IS NULL OR NEW.first_bed = '' THEN 0 ELSE 1 END) +
+      (CASE WHEN NEW.second_bed IS NULL OR NEW.second_bed = '' THEN 0 ELSE 1 END) +
+      (CASE WHEN NEW.third_bed IS NULL OR NEW.third_bed = '' THEN 0 ELSE 1 END) +
+      (CASE WHEN NEW.fourth_bed IS NULL OR NEW.fourth_bed = '' THEN 0 ELSE 1 END);
+END;;
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS `trg_dorm_room_before_update`;
+DELIMITER ;;
+CREATE TRIGGER `trg_dorm_room_before_update`
+BEFORE UPDATE ON `dorm_room`
+FOR EACH ROW
+BEGIN
+  SET NEW.current_capacity =
+      (CASE WHEN NEW.first_bed IS NULL OR NEW.first_bed = '' THEN 0 ELSE 1 END) +
+      (CASE WHEN NEW.second_bed IS NULL OR NEW.second_bed = '' THEN 0 ELSE 1 END) +
+      (CASE WHEN NEW.third_bed IS NULL OR NEW.third_bed = '' THEN 0 ELSE 1 END) +
+      (CASE WHEN NEW.fourth_bed IS NULL OR NEW.fourth_bed = '' THEN 0 ELSE 1 END);
+END;;
+DELIMITER ;
 
 --
 -- Dumping data for table `dorm_room`

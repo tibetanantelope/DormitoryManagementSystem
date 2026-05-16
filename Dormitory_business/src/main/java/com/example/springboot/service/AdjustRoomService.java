@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.springboot.entity.AdjustRoom;
 
+import java.util.Map;
+
 public interface AdjustRoomService extends IService<AdjustRoom> {
 
     //查询调宿申请
@@ -29,5 +31,8 @@ public interface AdjustRoomService extends IService<AdjustRoom> {
 
     //宿管查询管辖范围内的调宿申请
     Page findForDormManager(Integer pageNum, Integer pageSize, String search, Integer dormBuildId);
+
+    //管理员执行调宿存储过程
+    Map<String, Object> executeAdjustRoom(Integer adjustId);
 
 }

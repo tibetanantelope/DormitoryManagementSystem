@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/adjustRoom")
@@ -43,6 +44,10 @@ public class AdjustRoomController {
             if (adjustRoom.getState() == null || adjustRoom.getState().isEmpty()) {
                 adjustRoom.setState("未处理");
             }
+            String genderError = validateTargetRoomGender(adjustRoom);
+            if (genderError != null) {
+                return Result.error("-1", genderError);
+            }
             int result = adjustRoomService.addApply(adjustRoom);
             if (result == 1) {
                 return Result.success();
@@ -69,23 +74,16 @@ public class AdjustRoomController {
             if (!"通过".equals(oldApply.getState()) && !"approved".equals(oldApply.getState())) {
                 return Result.error("-1", "只有审核通过的申请才能执行调宿");
             }
-            if (!adjustGenderMatchesTargetRoom(adjustRoom)) {
-                return Result.error("-1", "目标宿舍楼性别类型不匹配");
+            String genderError = validateTargetRoomGender(adjustRoom);
+            if (genderError != null) {
+                return Result.error("-1", genderError);
             }
-            int i = dormRoomService.adjustRoomUpdate(adjustRoom);
-            if (i == -1) {
-                return Result.error("-1", "目标床位已有人");
+            Map<String, Object> result = adjustRoomService.executeAdjustRoom(adjustRoom.getId());
+            int resultCode = ((Number) result.get("resultCode")).intValue();
+            if (resultCode != 1) {
+                return Result.error("-1", String.valueOf(result.get("resultMsg")));
             }
-            if (i == -2) {
-                return Result.error("-1", "原床位信息不匹配，无法执行调宿");
-            }
-            if (i != 1) {
-                return Result.error("-1", "执行调宿失败");
-            }
-            adjustRoom.setState("处理中");
-            java.time.LocalDateTime now = java.time.LocalDateTime.now();
-            java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            adjustRoom.setFinishTime(now.format(formatter));
+            return Result.success();
         }
         //更新调宿表信息
         int i = adjustRoomService.updateApply(adjustRoom);
@@ -202,14 +200,20 @@ public class AdjustRoomController {
         }
     }
 
-    private boolean adjustGenderMatchesTargetRoom(AdjustRoom adjustRoom) {
+    private String validateTargetRoomGender(AdjustRoom adjustRoom) {
         Student student = studentService.stuInfo(adjustRoom.getUsername());
         DormRoom targetRoom = dormRoomService.checkRoomExist(adjustRoom.getTowardsRoomId());
-        if (student == null || targetRoom == null) {
-            return false;
+        if (student == null) {
+            return "申请学生不存在";
+        }
+        if (targetRoom == null) {
+            return "目标房间不存在";
         }
         String expectedGender = getExpectedGender(targetRoom.getDormBuildId());
-        return expectedGender == null || expectedGender.equals(student.getGender());
+        if (expectedGender != null && !expectedGender.equals(student.getGender())) {
+            return "目标宿舍楼性别类型不匹配";
+        }
+        return null;
     }
 
     private String getExpectedGender(int dormBuildId) {
