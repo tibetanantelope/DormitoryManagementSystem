@@ -8,7 +8,7 @@
             <div style="display: flex">
                 <div style="width: 600px; margin-left: 30px; position: relative">
                     <div>
-                        <el-upload :on-success="uploadSuccess" :show-file-list="false"
+                        <el-upload v-if="canEditSelfInfo()" :on-success="uploadSuccess" :show-file-list="false"
                                    action="http://localhost:9090/files/upload/"
                                    class="upload-demo"
                         >
@@ -24,6 +24,11 @@
                                 </div>
                             </div>
                         </el-upload>
+                        <div v-else class="AvatarDiv">
+                            <el-avatar icon="UserFilled" style="width: 80px; height: 80px"></el-avatar>
+                            <img :src="'data:image;base64,' + image" :style="imgDisplay"
+                                 style="width: 80px; height: 80px; border-radius: 40px"/>
+                        </div>
                     </div>
                     <el-descriptions :column="1" :size="large" border style="min-width: 500px" title="">
                         <el-descriptions-item>
@@ -93,7 +98,7 @@
                             {{ email }}
                         </el-descriptions-item>
                     </el-descriptions>
-                    <el-tooltip content="修改信息" placement="bottom">
+                    <el-tooltip v-if="canEditSelfInfo()" content="修改信息" placement="bottom">
                         <el-button icon="Edit" size="large" style="margin-top: 30px; width: 80px" type="primary"
                                    @click="Edit">
                         </el-button>

@@ -6,6 +6,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+/**
+ * 跨域配置类。由于系统采用前后端分离架构，Vue 前端和 Spring Boot 后端运行地址不同，所以需要通过 CORS 配置允许前端正常调用后端接口
+ */
 @Configuration
 public class CorsConfig {
 

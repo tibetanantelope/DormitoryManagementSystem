@@ -144,7 +144,17 @@ export default {
                 }
             });
         },
+        canEditSelfInfo() {
+            return this.identity === "admin";
+        },
         Edit() {
+            if (!this.canEditSelfInfo()) {
+                ElMessage({
+                    message: "当前角色仅可查看个人信息",
+                    type: "warning",
+                });
+                return;
+            }
             this.dialogVisible = true;
             this.$nextTick(() => {
                 this.$refs.form.resetFields();
@@ -162,6 +172,13 @@ export default {
             this.dialogVisible = false;
         },
         async save() {
+            if (!this.canEditSelfInfo()) {
+                ElMessage({
+                    message: "当前角色仅可查看个人信息",
+                    type: "warning",
+                });
+                return;
+            }
             this.$refs.form.validate(async (valid) => {
                 if (valid) {
                     //修改
@@ -224,6 +241,13 @@ export default {
             }
         },
         async uploadSuccess() {
+            if (!this.canEditSelfInfo()) {
+                ElMessage({
+                    message: "当前角色仅可查看个人信息",
+                    type: "warning",
+                });
+                return;
+            }
             this.form = JSON.parse(sessionStorage.getItem("user"));
             await request.post("/files/uploadAvatar/" + this.identity, this.form).then((res) => {
                 if (res.code === "0") {

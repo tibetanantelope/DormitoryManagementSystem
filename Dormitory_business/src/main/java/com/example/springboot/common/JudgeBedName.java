@@ -1,5 +1,9 @@
 package com.example.springboot.common;
 
+/**
+ * 把床位序号转成数据库字段名
+ */
+
 public class JudgeBedName {
 
     private static String bedName;

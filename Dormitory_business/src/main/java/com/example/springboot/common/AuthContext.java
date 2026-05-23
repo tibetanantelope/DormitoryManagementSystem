@@ -6,6 +6,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * 从当前请求中读取用户身份信息，供后端做权限判断。
+ */
+
 public class AuthContext {
 
     public static String getIdentity(HttpSession session) {
