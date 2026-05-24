@@ -25,15 +25,15 @@ public class DormRoom {
     private int floorNum;
     @TableField("max_capacity")
     private int maxCapacity;
-    @TableField("current_capacity")
+    @TableField(exist = false)
     private int currentCapacity;
-    @TableField("first_bed")
+    @TableField(exist = false)
     private String firstBed;
-    @TableField("second_bed")
+    @TableField(exist = false)
     private String secondBed;
-    @TableField("third_bed")
+    @TableField(exist = false)
     private String thirdBed;
-    @TableField("fourth_bed")
+    @TableField(exist = false)
     private String fourthBed;
 
 }

@@ -61,7 +61,7 @@ public class StudentController {
      */
     @PutMapping("/update")
     public Result<?> update(@RequestBody Student student, HttpSession session) {
-        if (!canManageStudent(session, student.getUsername())) {
+        if (!isAdmin(session)) {
             return Result.error("-1", "无权限操作");
         }
         if (!studentGenderMatchesCurrentRoom(student)) {
@@ -80,7 +80,7 @@ public class StudentController {
      */
     @DeleteMapping("/delete/{username}")
     public Result<?> delete(@PathVariable String username, HttpSession session) {
-        if (!canManageStudent(session, username)) {
+        if (!isAdmin(session)) {
             return Result.error("-1", "无权限操作");
         }
         if (dormRoomService.judgeHadBed(username) != null) {
@@ -174,21 +174,6 @@ public class StudentController {
         return AuthContext.getDormBuildId(session);
     }
 
-    private boolean canManageStudent(HttpSession session, String username) {
-        if (isAdmin(session)) {
-            return true;
-        }
-        if (!"dormManager".equals(AuthContext.getIdentity(session))) {
-            return false;
-        }
-        Integer dormBuildId = getDormManagerBuildId(session);
-        if (dormBuildId == null) {
-            return false;
-        }
-        DormRoom dormRoom = dormRoomService.judgeHadBed(username);
-        return dormRoom != null && dormRoom.getDormBuildId() == dormBuildId;
-    }
-
     private boolean isStudentReferenced(String username) {
         QueryWrapper<AdjustRoom> adjustQw = new QueryWrapper<>();
         adjustQw.eq("username", username);
@@ -213,14 +198,19 @@ public class StudentController {
         QueryWrapper<DormBuild> qw = new QueryWrapper<>();
         qw.eq("dormbuild_id", dormBuildId);
         DormBuild dormBuild = dormBuildService.getOne(qw);
-        if (dormBuild == null || dormBuild.getDormBuildDetail() == null) {
+        if (dormBuild == null) {
             return null;
         }
-        if (dormBuild.getDormBuildDetail().contains("男")) {
-            return "男";
+        if (dormBuild.getDormBuildType() != null) {
+            return dormBuild.getDormBuildType();
         }
-        if (dormBuild.getDormBuildDetail().contains("女")) {
-            return "女";
+        if (dormBuild.getDormBuildDetail() != null) {
+            if (dormBuild.getDormBuildDetail().contains("男")) {
+                return "男";
+            }
+            if (dormBuild.getDormBuildDetail().contains("女")) {
+                return "女";
+            }
         }
         return null;
     }

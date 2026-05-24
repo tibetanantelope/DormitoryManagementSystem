@@ -2,6 +2,7 @@ package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.springboot.common.AuthContext;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.AdjustRoom;
 import com.example.springboot.entity.DormBuild;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @RestController
@@ -98,8 +100,14 @@ public class AdjustRoomController {
      * 宿管审核调宿申请
      */
     @PutMapping("/review/{id}")
-    public Result<?> reviewApply(@PathVariable Integer id, @RequestParam String state) {
+    public Result<?> reviewApply(@PathVariable Integer id, @RequestParam String state, HttpSession session) {
         try {
+            if (!canReviewAdjustRoom(id, session)) {
+                return Result.error("-1", "无权限操作");
+            }
+            if (!isReviewState(state)) {
+                return Result.error("-1", "审核状态只能为通过或驳回");
+            }
             System.out.println("=== 审核调宿申请 ===");
             System.out.println("id: " + id);
             System.out.println("state: " + state);
@@ -139,14 +147,23 @@ public class AdjustRoomController {
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search,
-                              @RequestParam(required = false) Integer dormBuildId) {
+                              @RequestParam(required = false) Integer dormBuildId,
+                              HttpSession session) {
         Page page;
-        if (dormBuildId != null) {
+        if ("dormManager".equals(AuthContext.getIdentity(session))) {
+            Integer managerBuildId = AuthContext.getDormBuildId(session);
+            if (managerBuildId == null) {
+                return Result.error("-1", "无权限操作");
+            }
+            page = adjustRoomService.findForDormManager(pageNum, pageSize, search, managerBuildId);
+        } else if (AuthContext.isAdmin(session) && dormBuildId != null) {
             // 宿管查询管辖范围内的申请
             page = adjustRoomService.findForDormManager(pageNum, pageSize, search, dormBuildId);
-        } else {
+        } else if (AuthContext.isAdmin(session)) {
             // 管理员查询所有
             page = adjustRoomService.find(pageNum, pageSize, search);
+        } else {
+            return Result.error("-1", "无权限操作");
         }
         if (page != null) {
             return Result.success(page);
@@ -200,6 +217,29 @@ public class AdjustRoomController {
         }
     }
 
+    private boolean canReviewAdjustRoom(Integer adjustId, HttpSession session) {
+        if (AuthContext.isAdmin(session)) {
+            return true;
+        }
+        if (!"dormManager".equals(AuthContext.getIdentity(session))) {
+            return false;
+        }
+        Integer dormBuildId = AuthContext.getDormBuildId(session);
+        if (dormBuildId == null) {
+            return false;
+        }
+        AdjustRoom adjustRoom = adjustRoomService.getById(adjustId);
+        if (adjustRoom == null || adjustRoom.getCurrentRoomId() == null) {
+            return false;
+        }
+        DormRoom currentRoom = dormRoomService.getById(adjustRoom.getCurrentRoomId());
+        return currentRoom != null && currentRoom.getDormBuildId() == dormBuildId;
+    }
+
+    private boolean isReviewState(String state) {
+        return "approved".equals(state) || "rejected".equals(state) || "通过".equals(state) || "驳回".equals(state);
+    }
+
     private String validateTargetRoomGender(AdjustRoom adjustRoom) {
         Student student = studentService.stuInfo(adjustRoom.getUsername());
         DormRoom currentRoom = dormRoomService.checkRoomExist(adjustRoom.getCurrentRoomId());
@@ -224,14 +264,19 @@ public class AdjustRoomController {
         QueryWrapper<DormBuild> qw = new QueryWrapper<>();
         qw.eq("dormbuild_id", dormBuildId);
         DormBuild dormBuild = dormBuildService.getOne(qw);
-        if (dormBuild == null || dormBuild.getDormBuildDetail() == null) {
+        if (dormBuild == null) {
             return null;
         }
-        if (dormBuild.getDormBuildDetail().contains("男")) {
-            return "男";
+        if (dormBuild.getDormBuildType() != null) {
+            return dormBuild.getDormBuildType();
         }
-        if (dormBuild.getDormBuildDetail().contains("女")) {
-            return "女";
+        if (dormBuild.getDormBuildDetail() != null) {
+            if (dormBuild.getDormBuildDetail().contains("男")) {
+                return "男";
+            }
+            if (dormBuild.getDormBuildDetail().contains("女")) {
+                return "女";
+            }
         }
         return null;
     }

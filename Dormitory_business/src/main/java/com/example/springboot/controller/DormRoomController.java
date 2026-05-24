@@ -273,6 +273,7 @@ public class DormRoomController {
     }
 
     private boolean hasAnyStudent(DormRoom dormRoom) {
+        dormRoom = dormRoomService.checkRoomExist(dormRoom.getDormRoomId());
         return hasText(dormRoom.getFirstBed())
                 || hasText(dormRoom.getSecondBed())
                 || hasText(dormRoom.getThirdBed())
@@ -315,14 +316,19 @@ public class DormRoomController {
         QueryWrapper<DormBuild> qw = new QueryWrapper<>();
         qw.eq("dormbuild_id", dormBuildId);
         DormBuild dormBuild = dormBuildService.getOne(qw);
-        if (dormBuild == null || dormBuild.getDormBuildDetail() == null) {
+        if (dormBuild == null) {
             return null;
         }
-        if (dormBuild.getDormBuildDetail().contains("男")) {
-            return "男";
+        if (dormBuild.getDormBuildType() != null) {
+            return dormBuild.getDormBuildType();
         }
-        if (dormBuild.getDormBuildDetail().contains("女")) {
-            return "女";
+        if (dormBuild.getDormBuildDetail() != null) {
+            if (dormBuild.getDormBuildDetail().contains("男")) {
+                return "男";
+            }
+            if (dormBuild.getDormBuildDetail().contains("女")) {
+                return "女";
+            }
         }
         return null;
     }

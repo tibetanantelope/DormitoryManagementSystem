@@ -2,6 +2,7 @@ package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.springboot.common.AuthContext;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.DormBuild;
 import com.example.springboot.entity.DormRoom;
@@ -14,6 +15,7 @@ import com.example.springboot.service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/repair")
@@ -97,14 +99,23 @@ public class RepairController {
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search,
-                              @RequestParam(required = false) Integer dormBuildId) {
+                              @RequestParam(required = false) Integer dormBuildId,
+                              HttpSession session) {
         Page page;
-        if (dormBuildId != null) {
+        if ("dormManager".equals(AuthContext.getIdentity(session))) {
+            Integer managerBuildId = AuthContext.getDormBuildId(session);
+            if (managerBuildId == null) {
+                return Result.error("-1", "无权限操作");
+            }
+            page = repairService.findForDormManager(pageNum, pageSize, search, managerBuildId);
+        } else if (AuthContext.isAdmin(session) && dormBuildId != null) {
             // 宿管查询管辖范围内的订单
             page = repairService.findForDormManager(pageNum, pageSize, search, dormBuildId);
-        } else {
+        } else if (AuthContext.isAdmin(session)) {
             // 没传楼栋ID则查询所有
             page = repairService.find(pageNum, pageSize, search);
+        } else {
+            return Result.error("-1", "无权限操作");
         }
         if (page != null) {
             return Result.success(page);
@@ -149,13 +160,31 @@ public class RepairController {
      * 宿管审核报修订单
      */
     @PutMapping("/review/{id}")
-    public Result<?> reviewOrder(@PathVariable Integer id, @RequestParam String state) {
+    public Result<?> reviewOrder(@PathVariable Integer id, @RequestParam String state, HttpSession session) {
+        if (!canReviewRepair(id, session)) {
+            return Result.error("-1", "无权限操作");
+        }
         int i = repairService.reviewOrder(id, state);
         if (i == 1) {
             return Result.success();
         } else {
             return Result.error("-1", "审核失败");
         }
+    }
+
+    private boolean canReviewRepair(Integer repairId, HttpSession session) {
+        if (AuthContext.isAdmin(session)) {
+            return true;
+        }
+        if (!"dormManager".equals(AuthContext.getIdentity(session))) {
+            return false;
+        }
+        Integer dormBuildId = AuthContext.getDormBuildId(session);
+        if (dormBuildId == null) {
+            return false;
+        }
+        Repair repair = repairService.getById(repairId);
+        return repair != null && repair.getDormBuildId() != null && repair.getDormBuildId().intValue() == dormBuildId;
     }
 
     /**

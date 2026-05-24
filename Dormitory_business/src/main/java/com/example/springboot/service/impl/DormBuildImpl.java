@@ -38,8 +38,15 @@ public class DormBuildImpl extends ServiceImpl<DormBuildMapper, DormBuild> imple
     public Page find(Integer pageNum, Integer pageSize, String search) {
         Page page = new Page<>(pageNum, pageSize);
         QueryWrapper<DormBuild> qw = new QueryWrapper<>();
-        qw.like("DormBuild_id", search);
+        qw.like("dormbuild_id", search);
         Page buildingPage = dormBuildMapper.selectPage(page, qw);
+        buildingPage.getRecords().forEach(record -> {
+            DormBuild dormBuild = (DormBuild) record;
+            dormBuild.setId(dormBuild.getDormBuildId());
+            if (dormBuild.getDormBuildDetail() == null && dormBuild.getDormBuildType() != null) {
+                dormBuild.setDormBuildDetail(dormBuild.getDormBuildType() + "宿舍");
+            }
+        });
         return buildingPage;
     }
 

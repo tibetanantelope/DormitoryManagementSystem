@@ -41,7 +41,7 @@
           <el-table-column label="手机号" prop="phoneNum"/>
           <el-table-column :show-overflow-tooltip="true" label="邮箱" prop="email"/>
           <!--      操作栏-->
-          <el-table-column label="操作" width="130px">
+          <el-table-column v-if="canAddStudent()" label="操作" width="130px">
             <template #default="scope">
               <el-button icon="Edit" type="primary" @click="handleEdit(scope.row)"></el-button>
               <el-popconfirm title="确认删除？" @confirm="handleDelete(scope.row.username)">

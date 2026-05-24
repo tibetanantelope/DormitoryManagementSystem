@@ -20,6 +20,7 @@ export default {
             form: {
                 dormBuildId: "",
                 dormBuildName: "",
+                dormBuildType: "男",
                 dormBuildDetail: "",
             },
             rules: {
@@ -34,8 +35,8 @@ export default {
                 dormBuildName: [
                     {required: true, message: "请输入名称", trigger: "blur"},
                 ],
-                dormBuildDetail: [
-                    {required: true, message: "请输入备注", trigger: "blur"},
+                dormBuildType: [
+                    {required: true, message: "请选择楼栋类型", trigger: "change"},
                 ],
             },
         };
@@ -89,14 +90,14 @@ export default {
             });
         },
         filterTag(value, row) {
-            return row.dormBuildDetail === value;
+            return row.dormBuildType === value;
         },
         add() {
             this.dialogVisible = true;
             this.$nextTick(() => {
                 this.$refs.form.resetFields();
                 this.disabled = false;
-                this.form = {};
+                this.form = {dormBuildType: "男"};
                 this.judge = false;
             });
         },

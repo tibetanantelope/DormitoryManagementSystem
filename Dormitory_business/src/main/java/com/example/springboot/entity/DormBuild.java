@@ -1,6 +1,5 @@
 package com.example.springboot.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -18,12 +17,14 @@ import lombok.NoArgsConstructor;
 @TableName(value = "dorm_build")
 public class DormBuild {
 
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableField(exist = false)
     private Integer id;
-    @TableField("dormbuild_id")
+    @TableId("dormbuild_id")
     private int dormBuildId;
     @TableField("dormbuild_name")
     private String dormBuildName;
+    @TableField("dormbuild_type")
+    private String dormBuildType;
     @TableField("dormbuild_detail")
     private String dormBuildDetail;
 }

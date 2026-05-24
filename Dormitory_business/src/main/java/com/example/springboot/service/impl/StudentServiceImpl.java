@@ -67,10 +67,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         Page page = new Page<>(pageNum, pageSize);
         QueryWrapper<Student> qw = new QueryWrapper<>();
         qw.inSql("username",
-                "SELECT first_bed FROM dorm_room WHERE dormbuild_id = " + dormBuildId
-                        + " UNION SELECT second_bed FROM dorm_room WHERE dormbuild_id = " + dormBuildId
-                        + " UNION SELECT third_bed FROM dorm_room WHERE dormbuild_id = " + dormBuildId
-                        + " UNION SELECT fourth_bed FROM dorm_room WHERE dormbuild_id = " + dormBuildId);
+                "SELECT b.username FROM dorm_bed b "
+                        + "JOIN dorm_room r ON b.dormroom_id = r.dormroom_id "
+                        + "WHERE r.dormbuild_id = " + dormBuildId
+                        + " AND b.username IS NOT NULL");
         if (search != null && !search.trim().isEmpty()) {
             qw.like("name", search.trim());
         }

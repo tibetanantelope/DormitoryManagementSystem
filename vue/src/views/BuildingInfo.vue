@@ -30,13 +30,14 @@
           <el-table-column
               :filter-method="filterTag"
               :filters="[
-              { text: '男宿舍', value: '男宿舍' },
-              { text: '女宿舍', value: '女宿舍' },
+              { text: '男宿舍', value: '男' },
+              { text: '女宿舍', value: '女' },
             ]"
               filter-placement="bottom-end"
-              label="备注"
-              prop="dormBuildDetail"
+              label="类型"
+              prop="dormBuildType"
           />
+          <el-table-column label="备注" prop="dormBuildDetail"/>
           <!--      操作栏-->
           <el-table-column v-if="canManageDormInfo()" label="操作" width="130px">
             <template #default="scope">
@@ -72,6 +73,10 @@
               </el-form-item>
               <el-form-item label="名称" prop="dormBuildName">
                 <el-input v-model="form.dormBuildName" style="width: 80%"></el-input>
+              </el-form-item>
+              <el-form-item label="类型" prop="dormBuildType">
+                <el-radio v-model="form.dormBuildType" label="男">男宿舍</el-radio>
+                <el-radio v-model="form.dormBuildType" label="女">女宿舍</el-radio>
               </el-form-item>
               <el-form-item label="备注" prop="dormBuildDetail">
                 <el-input
