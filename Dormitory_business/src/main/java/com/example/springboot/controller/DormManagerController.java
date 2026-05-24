@@ -1,9 +1,12 @@
 package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.springboot.common.Result;
+import com.example.springboot.entity.DormBuild;
 import com.example.springboot.entity.DormManager;
 import com.example.springboot.entity.User;
+import com.example.springboot.service.DormBuildService;
 import com.example.springboot.service.DormManagerService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +19,17 @@ public class DormManagerController {
     @Resource
     private DormManagerService dormManagerService;
 
+    @Resource
+    private DormBuildService dormBuildService;
+
     /**
      * 宿管添加
      */
     @PostMapping("/add")
     public Result<?> add(@RequestBody DormManager dormManager) {
+        if (!buildingExists(dormManager.getDormBuildId())) {
+            return Result.error("-1", "所管理的楼栋不存在");
+        }
         int i = dormManagerService.addNewDormManager(dormManager);
         if (i == 1) {
             return Result.success();
@@ -34,6 +43,9 @@ public class DormManagerController {
      */
     @PutMapping("/update")
     public Result<?> update(@RequestBody DormManager dormManager) {
+        if (!buildingExists(dormManager.getDormBuildId())) {
+            return Result.error("-1", "所管理的楼栋不存在");
+        }
         int i = dormManagerService.updateNewDormManager(dormManager);
         if (i == 1) {
             return Result.success();
@@ -93,5 +105,11 @@ public class DormManagerController {
         if (user instanceof DormManager) {
             ((DormManager) user).setPassword(null);
         }
+    }
+
+    private boolean buildingExists(int dormBuildId) {
+        QueryWrapper<DormBuild> qw = new QueryWrapper<>();
+        qw.eq("dormbuild_id", dormBuildId);
+        return dormBuildService.count(qw) > 0;
     }
 }

@@ -115,7 +115,7 @@ proc: BEGIN
 
   IF v_target_room_count = 0 THEN
     SET p_result_code = -3;
-    SET p_result_msg = '目标床位已有人';
+    SET p_result_msg = '目标房间不存在';
     LEAVE proc;
   END IF;
 
@@ -158,13 +158,13 @@ proc: BEGIN
   END IF;
 
   IF v_towards_bed_id = 1 THEN
-    UPDATE dorm_room SET first_bed = v_username WHERE dormroom_id = v_towards_room_id AND first_bed IS NULL;
+    UPDATE dorm_room SET first_bed = v_username WHERE dormroom_id = v_towards_room_id AND (first_bed IS NULL OR first_bed = '');
   ELSEIF v_towards_bed_id = 2 THEN
-    UPDATE dorm_room SET second_bed = v_username WHERE dormroom_id = v_towards_room_id AND second_bed IS NULL;
+    UPDATE dorm_room SET second_bed = v_username WHERE dormroom_id = v_towards_room_id AND (second_bed IS NULL OR second_bed = '');
   ELSEIF v_towards_bed_id = 3 THEN
-    UPDATE dorm_room SET third_bed = v_username WHERE dormroom_id = v_towards_room_id AND third_bed IS NULL;
+    UPDATE dorm_room SET third_bed = v_username WHERE dormroom_id = v_towards_room_id AND (third_bed IS NULL OR third_bed = '');
   ELSEIF v_towards_bed_id = 4 THEN
-    UPDATE dorm_room SET fourth_bed = v_username WHERE dormroom_id = v_towards_room_id AND fourth_bed IS NULL;
+    UPDATE dorm_room SET fourth_bed = v_username WHERE dormroom_id = v_towards_room_id AND (fourth_bed IS NULL OR fourth_bed = '');
   ELSE
     SET p_result_code = -3;
     SET p_result_msg = '目标床位已有人';
@@ -247,7 +247,8 @@ CREATE TABLE `dorm_build` (
   `dormbuild_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '宿舍楼名称',
   `dormbuild_detail` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '宿舍楼备注',
   `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_dorm_build_dormbuild_id` (`dormbuild_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -391,7 +392,7 @@ DROP TABLE IF EXISTS `repair`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `repair` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '订单编号',
-  `repairer` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报修人',
+  `repairer` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '报修人学号',
   `dormbuild_id` int NOT NULL COMMENT '报修宿舍楼',
   `dormroom_id` int NOT NULL COMMENT '报修宿舍房间号',
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '表单标题',
@@ -470,6 +471,50 @@ LOCK TABLES `visitor` WRITE;
 /*!40000 ALTER TABLE `visitor` DISABLE KEYS */;
 /*!40000 ALTER TABLE `visitor` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Foreign key constraints
+--
+
+ALTER TABLE `dorm_manager`
+  ADD CONSTRAINT `fk_dorm_manager_build`
+  FOREIGN KEY (`dormbuild_id`) REFERENCES `dorm_build` (`dormbuild_id`)
+  ON UPDATE CASCADE
+  ON DELETE RESTRICT;
+
+ALTER TABLE `dorm_room`
+  ADD CONSTRAINT `fk_dorm_room_build`
+  FOREIGN KEY (`dormbuild_id`) REFERENCES `dorm_build` (`dormbuild_id`)
+  ON UPDATE CASCADE
+  ON DELETE RESTRICT;
+
+ALTER TABLE `adjust_room`
+  ADD CONSTRAINT `fk_adjust_room_student`
+  FOREIGN KEY (`username`) REFERENCES `student` (`username`)
+  ON UPDATE CASCADE
+  ON DELETE RESTRICT,
+  ADD CONSTRAINT `fk_adjust_room_current_room`
+  FOREIGN KEY (`currentroom_id`) REFERENCES `dorm_room` (`dormroom_id`)
+  ON UPDATE CASCADE
+  ON DELETE RESTRICT,
+  ADD CONSTRAINT `fk_adjust_room_towards_room`
+  FOREIGN KEY (`towardsroom_id`) REFERENCES `dorm_room` (`dormroom_id`)
+  ON UPDATE CASCADE
+  ON DELETE RESTRICT;
+
+ALTER TABLE `repair`
+  ADD CONSTRAINT `fk_repair_student`
+  FOREIGN KEY (`repairer`) REFERENCES `student` (`username`)
+  ON UPDATE CASCADE
+  ON DELETE RESTRICT,
+  ADD CONSTRAINT `fk_repair_build`
+  FOREIGN KEY (`dormbuild_id`) REFERENCES `dorm_build` (`dormbuild_id`)
+  ON UPDATE CASCADE
+  ON DELETE RESTRICT,
+  ADD CONSTRAINT `fk_repair_room`
+  FOREIGN KEY (`dormroom_id`) REFERENCES `dorm_room` (`dormroom_id`)
+  ON UPDATE CASCADE
+  ON DELETE RESTRICT;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

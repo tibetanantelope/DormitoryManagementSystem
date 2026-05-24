@@ -52,7 +52,7 @@ export default {
             this.username = this.form.username;
         },
         async load() {
-            request.get("/repair/find/" + this.name, {
+            request.get("/repair/find/" + this.username, {
                 params: {
                     pageNum: this.currentPage,
                     pageSize: this.pageSize,
@@ -116,7 +116,7 @@ export default {
             this.dialogVisible = true;
             this.$nextTick(() => {
                 this.$refs.form.resetFields();
-                this.form.repairer = this.name
+                this.form.repairer = this.username
                 this.form.dormBuildId = this.room.dormBuildId
                 this.form.dormRoomId = this.room.dormRoomId
             });

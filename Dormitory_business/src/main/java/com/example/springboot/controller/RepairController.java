@@ -1,9 +1,16 @@
 package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.springboot.common.Result;
+import com.example.springboot.entity.DormBuild;
+import com.example.springboot.entity.DormRoom;
 import com.example.springboot.entity.Repair;
+import com.example.springboot.entity.Student;
+import com.example.springboot.service.DormBuildService;
+import com.example.springboot.service.DormRoomService;
 import com.example.springboot.service.RepairService;
+import com.example.springboot.service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -15,11 +22,24 @@ public class RepairController {
     @Resource
     private RepairService repairService;
 
+    @Resource
+    private StudentService studentService;
+
+    @Resource
+    private DormBuildService dormBuildService;
+
+    @Resource
+    private DormRoomService dormRoomService;
+
     /**
      * 添加订单
      */
     @PostMapping("/add")
     public Result<?> add(@RequestBody Repair repair) {
+        String referenceError = validateReferences(repair);
+        if (referenceError != null) {
+            return Result.error("-1", referenceError);
+        }
         int i = repairService.addNewOrder(repair);
         if (i == 1) {
             return Result.success();
@@ -33,6 +53,10 @@ public class RepairController {
      */
     @PutMapping("/update")
     public Result<?> update(@RequestBody Repair repair) {
+        String referenceError = validateReferences(repair);
+        if (referenceError != null) {
+            return Result.error("-1", referenceError);
+        }
         int i = repairService.updateNewOrder(repair);
         if (i == 1) {
             return Result.success();
@@ -145,5 +169,32 @@ public class RepairController {
         } else {
             return Result.error("-1", "报修统计查询失败");
         }
+    }
+
+    private String validateReferences(Repair repair) {
+        Student student = studentService.getById(repair.getRepairer());
+        if (student == null) {
+            return "报修学生不存在";
+        }
+        if (!buildingExists(repair.getDormBuildId())) {
+            return "报修楼栋不存在";
+        }
+        DormRoom dormRoom = repair.getDormRoomId() == null ? null : dormRoomService.getById(repair.getDormRoomId().intValue());
+        if (dormRoom == null) {
+            return "报修房间不存在";
+        }
+        if (repair.getDormBuildId() != null && dormRoom.getDormBuildId() != repair.getDormBuildId().intValue()) {
+            return "报修房间不属于所选楼栋";
+        }
+        return null;
+    }
+
+    private boolean buildingExists(Long dormBuildId) {
+        if (dormBuildId == null) {
+            return false;
+        }
+        QueryWrapper<DormBuild> qw = new QueryWrapper<>();
+        qw.eq("dormbuild_id", dormBuildId);
+        return dormBuildService.count(qw) > 0;
     }
 }

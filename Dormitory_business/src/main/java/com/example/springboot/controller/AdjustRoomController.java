@@ -202,9 +202,13 @@ public class AdjustRoomController {
 
     private String validateTargetRoomGender(AdjustRoom adjustRoom) {
         Student student = studentService.stuInfo(adjustRoom.getUsername());
+        DormRoom currentRoom = dormRoomService.checkRoomExist(adjustRoom.getCurrentRoomId());
         DormRoom targetRoom = dormRoomService.checkRoomExist(adjustRoom.getTowardsRoomId());
         if (student == null) {
             return "申请学生不存在";
+        }
+        if (currentRoom == null) {
+            return "当前房间不存在";
         }
         if (targetRoom == null) {
             return "目标房间不存在";

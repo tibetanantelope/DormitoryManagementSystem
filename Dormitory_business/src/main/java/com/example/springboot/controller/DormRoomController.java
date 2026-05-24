@@ -5,9 +5,13 @@ import com.example.springboot.common.AuthContext;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.DormBuild;
 import com.example.springboot.entity.DormRoom;
+import com.example.springboot.entity.AdjustRoom;
+import com.example.springboot.entity.Repair;
 import com.example.springboot.entity.Student;
+import com.example.springboot.service.AdjustRoomService;
 import com.example.springboot.service.DormBuildService;
 import com.example.springboot.service.DormRoomService;
+import com.example.springboot.service.RepairService;
 import com.example.springboot.service.StudentService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +32,12 @@ public class DormRoomController {
 
     @Resource
     private StudentService studentService;
+
+    @Resource
+    private AdjustRoomService adjustRoomService;
+
+    @Resource
+    private RepairService repairService;
 
     /**
      * 添加房间
@@ -82,6 +92,16 @@ public class DormRoomController {
     public Result<?> delete(@PathVariable Integer dormRoomId, HttpSession session) {
         if (!isAdmin(session)) {
             return Result.error("-1", "无权限操作");
+        }
+        DormRoom dormRoom = dormRoomService.getById(dormRoomId);
+        if (dormRoom == null) {
+            return Result.error("-1", "房间不存在");
+        }
+        if (hasAnyStudent(dormRoom)) {
+            return Result.error("-1", "该房间还有学生入住，不能删除");
+        }
+        if (isRoomReferenced(dormRoomId)) {
+            return Result.error("-1", "该房间已有调宿或报修记录，不能删除");
         }
         int i = dormRoomService.deleteRoom(dormRoomId);
         if (i == 1) {
@@ -239,6 +259,28 @@ public class DormRoomController {
         QueryWrapper<DormBuild> qw = new QueryWrapper<>();
         qw.eq("dormbuild_id", dormBuildId);
         return dormBuildService.count(qw) > 0;
+    }
+
+    private boolean isRoomReferenced(Integer dormRoomId) {
+        QueryWrapper<AdjustRoom> adjustQw = new QueryWrapper<>();
+        adjustQw.eq("currentroom_id", dormRoomId).or().eq("towardsroom_id", dormRoomId);
+        if (adjustRoomService.count(adjustQw) > 0) {
+            return true;
+        }
+        QueryWrapper<Repair> repairQw = new QueryWrapper<>();
+        repairQw.eq("dormroom_id", dormRoomId);
+        return repairService.count(repairQw) > 0;
+    }
+
+    private boolean hasAnyStudent(DormRoom dormRoom) {
+        return hasText(dormRoom.getFirstBed())
+                || hasText(dormRoom.getSecondBed())
+                || hasText(dormRoom.getThirdBed())
+                || hasText(dormRoom.getFourthBed());
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
     }
 
     private String validateRoomGender(DormRoom dormRoom) {

@@ -6,10 +6,14 @@ import com.example.springboot.common.AuthContext;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.DormBuild;
 import com.example.springboot.entity.DormRoom;
+import com.example.springboot.entity.AdjustRoom;
+import com.example.springboot.entity.Repair;
 import com.example.springboot.entity.Student;
 import com.example.springboot.entity.User;
+import com.example.springboot.service.AdjustRoomService;
 import com.example.springboot.service.DormBuildService;
 import com.example.springboot.service.DormRoomService;
+import com.example.springboot.service.RepairService;
 import com.example.springboot.service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +32,12 @@ public class StudentController {
 
     @Resource
     private DormBuildService dormBuildService;
+
+    @Resource
+    private AdjustRoomService adjustRoomService;
+
+    @Resource
+    private RepairService repairService;
 
     /**
      * 添加学生信息
@@ -72,6 +82,12 @@ public class StudentController {
     public Result<?> delete(@PathVariable String username, HttpSession session) {
         if (!canManageStudent(session, username)) {
             return Result.error("-1", "无权限操作");
+        }
+        if (dormRoomService.judgeHadBed(username) != null) {
+            return Result.error("-1", "该学生仍有床位信息，不能删除");
+        }
+        if (isStudentReferenced(username)) {
+            return Result.error("-1", "该学生已有调宿或报修记录，不能删除");
         }
         int i = studentService.deleteStudent(username);
         if (i == 1) {
@@ -171,6 +187,17 @@ public class StudentController {
         }
         DormRoom dormRoom = dormRoomService.judgeHadBed(username);
         return dormRoom != null && dormRoom.getDormBuildId() == dormBuildId;
+    }
+
+    private boolean isStudentReferenced(String username) {
+        QueryWrapper<AdjustRoom> adjustQw = new QueryWrapper<>();
+        adjustQw.eq("username", username);
+        if (adjustRoomService.count(adjustQw) > 0) {
+            return true;
+        }
+        QueryWrapper<Repair> repairQw = new QueryWrapper<>();
+        repairQw.eq("repairer", username);
+        return repairService.count(repairQw) > 0;
     }
 
     private boolean studentGenderMatchesCurrentRoom(Student student) {
